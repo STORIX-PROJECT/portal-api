@@ -101,16 +101,6 @@ public class SecurityConfig {
         return source;
     }
 
-    //HACK: 토큰 관리 부탁드립니다. 허허
-    // react 전달 handler
-    @Bean
-    public AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
-        return (request, response, authentication) -> {
-            String targetUrl = "http://localhost:3000/oauth2/redirect?token={JWT_TOKEN}";
-            response.sendRedirect(targetUrl);
-        };
-
-    }
     /* 기본 인증 검증 및 기본 provider */
     @Bean
     public AuthenticationManager authenticationManager() {
