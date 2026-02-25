@@ -17,4 +17,13 @@ public record ApiResponse<T>(
                 .data(data)
                 .build();
     }
+
+    public static <T> ApiResponse<T> fail(String statusCode, String message, T data) {
+        return ApiResponse.<T>builder()
+                .success("false")
+                .code(statusCode)
+                .message(message)
+                .data(data)
+                .build();
+    }
 }
