@@ -1,8 +1,8 @@
 package com.shop.storix.portalapi.service.auth;
 
-import com.shop.storix.portalapi.model.dto.auth.domain.Token;
+import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
 
 public interface TokenService {
-    void save(Token token);
-    Token findById (String userLoginNo);
+    void save(AuthDto.Token token);
+    AuthDto.Token findById (String userLoginNo);
 }

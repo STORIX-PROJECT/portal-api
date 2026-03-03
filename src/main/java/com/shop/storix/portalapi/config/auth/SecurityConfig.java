@@ -5,6 +5,7 @@ import com.shop.storix.portalapi.config.auth.handler.FailureHandler;
 import com.shop.storix.portalapi.config.auth.handler.SuccessHandler;
 import com.shop.storix.portalapi.service.auth.facade.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -20,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
@@ -37,13 +37,15 @@ import java.util.List;
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
 
-    private static final String PERMITTED_ROLES[] = {"PURCHASER", "SELLER","ADMIN"};
     public static final String PERMITTED_URI[] = {
-            "/login","/default-ui.css",
+            "/login/oauth2/code/google",
+            "/login/oauth2/code/naver",
+            "/login",
             "/v3/**", "/api/v1/auth/**",
             "/oauth2/**", "/api/login/**",
             "/api/v1/admin/**", "/swagger-ui/**"
-        };
+    };
+    private static final String PERMITTED_ROLES[] = {"PURCHASER", "SELLER", "ADMIN"};
     private final CustomOAuth2LoginService customOAuth2LoginService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final LocalLoginService localLoginService;
@@ -70,8 +72,10 @@ public class SecurityConfig {
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PERMITTED_URI).permitAll()
-                        .anyRequest().authenticated()
+                                .requestMatchers(PERMITTED_URI).permitAll()
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                                .requestMatchers("/api/v1/user").hasRole("ADMIN")
+                                .anyRequest().authenticated()
                         //.anyRequest().permitAll() // 임시
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), AuthorizationFilter.class)

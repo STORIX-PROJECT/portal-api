@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final LoginMapper loginMapper;
@@ -43,36 +45,36 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
-        //
+        // 소셜 종류에 따른 사용자 OAuth 정보 반환
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerInfo, attributes);
         String userIdentifier = oAuth2UserInfo.getOAuth2Id();
 
-        Login user = getLogin(userIdentifier, providerInfo);
+        AuthDto.Login user = getLogin(userIdentifier, providerInfo);
 
-        OAuthLogin oAuthLogin = loginMapper.findOAuthLoginByOAuthInfo(userIdentifier,providerInfo.name()).orElseThrow();
+        AuthDto.OAuthLogin oAuthLoginDto = loginMapper.findOAuthLoginByOAuthInfo(userIdentifier,providerInfo.name()).orElseThrow();
 
-        List<Role> roles = loginMapper.findUserRoleByLoginNo(user);
+        List<AuthDto.Role> roles = loginMapper.findUserRoleByLoginNo(user);
 
-        return new UserPrincipal(user,oAuthLogin,roles, attributes, key);
+        return new UserPrincipal(user, oAuthLoginDto,roles, attributes, key);
     }
 
-    private Login getLogin(String userIdentifier, ProviderInfo providerInfo) {
-        Optional<Login> optionalLogin = loginMapper.findLoginByOAuthInfo(userIdentifier, providerInfo.name());
+    private AuthDto.Login getLogin(String userIdentifier, ProviderInfo providerInfo) {
+        Optional<AuthDto.Login> optionalLogin = loginMapper.findLoginByOAuthInfo(userIdentifier, providerInfo.name());
 
         if (optionalLogin.isEmpty()) {
             String loginUuid = UuidUtil.randomUuid();
-            Login unregisteredUser = new Login(loginUuid,userIdentifier,userIdentifier,"active");
+            AuthDto.Login unregisteredUser = new AuthDto.Login(loginUuid, userIdentifier, userIdentifier, "active");
 
             loginMapper.insertUserLogin(unregisteredUser);
 
             /*OAuthLogin 테이블*/
             String OAuthloginUuid = UuidUtil.randomUuid();
-            OAuthLogin oAuthLoginInfo = new OAuthLogin(OAuthloginUuid,unregisteredUser.userLoginNo(), providerInfo.name(),userIdentifier);
-            loginMapper.insertUserOauth(oAuthLoginInfo);
+            AuthDto.OAuthLogin oAuthLoginDtoInfo = new AuthDto.OAuthLogin(OAuthloginUuid,unregisteredUser.userLoginNo(), providerInfo.name(),userIdentifier);
+            loginMapper.insertUserOauth(oAuthLoginDtoInfo);
 
             /*Role Login 테이블*/
 
-            UserRole userRole = new UserRole(loginUuid, "ROLE_001");// HACK: 임시로 역할 넣는 거 구현
+            AuthDto.UserRole userRole = new AuthDto.UserRole(loginUuid, "ROLE_001");// HACK: 임시로 역할 넣는 거 구현
             loginMapper.insertUserRole(userRole);
 
             /*사용자 정보 없을떄 구매자 정보도 같이 저장*/
@@ -81,6 +83,4 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
         }
         return optionalLogin.orElseThrow(); // HACK: 에러 처리 해야함
     }
-
-
 }

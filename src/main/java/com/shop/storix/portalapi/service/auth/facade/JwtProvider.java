@@ -1,9 +1,7 @@
 package com.shop.storix.portalapi.service.auth.facade;
 
 import com.shop.storix.portalapi.model.dto.auth.TokenStatus;
-import com.shop.storix.portalapi.model.dto.auth.JwtPrincipal;
-import com.shop.storix.portalapi.model.dto.auth.domain.Token;
-
+import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
 import com.shop.storix.portalapi.service.auth.JwtGenerator;
 import com.shop.storix.portalapi.service.auth.JwtUtils;
 import com.shop.storix.portalapi.service.auth.TokenService;
@@ -57,7 +55,7 @@ public class JwtProvider {
 
     public String generateRefreshToken(UserDetails userDetails) {
         String refreshToken = jwtGenerator.generateRefreshToken(REFRESH_SECRET_KEY, REFRESH_EXPIRATION, userDetails);
-        tokenService.save(new Token(userDetails.getUsername(), refreshToken));
+        tokenService.save(new AuthDto.Token(userDetails.getUsername(), refreshToken));
         return refreshToken;
     }
 
@@ -100,8 +98,8 @@ public class JwtProvider {
                     .toList();
         }
 
-        JwtPrincipal principal =
-                new JwtPrincipal(id, roles == null ? List.of() : roles);
+        AuthDto.JwtPrincipal principal =
+                new AuthDto.JwtPrincipal(id, roles == null ? List.of() : roles);
 
         return new UsernamePasswordAuthenticationToken(
                 principal,

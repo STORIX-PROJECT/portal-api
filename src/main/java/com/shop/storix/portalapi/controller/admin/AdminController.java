@@ -1,5 +1,6 @@
 package com.shop.storix.portalapi.controller.admin;
 
+import com.shop.storix.portalapi.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

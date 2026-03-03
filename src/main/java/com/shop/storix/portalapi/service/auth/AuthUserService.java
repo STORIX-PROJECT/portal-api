@@ -1,9 +1,9 @@
 package com.shop.storix.portalapi.service.auth;
 
-import com.shop.storix.portalapi.model.dto.auth.AuthUser;
+import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
 
 public interface AuthUserService {
-    AuthUser getUserAuth(String userLoginNo);
+    AuthDto.AuthUser getUserAuth(String userLoginNo);
 
 
 }

@@ -1,7 +1,5 @@
 package com.shop.storix.portalapi.service.auth;
 
-import com.shop.storix.portalapi.model.dto.auth.domain.Login;
-import com.shop.storix.portalapi.model.dto.auth.domain.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.GrantedAuthority;
