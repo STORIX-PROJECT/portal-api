@@ -1,4 +1,4 @@
-package com.shop.storix.portalapi.model.dto.auth.domain;
+package com.shop.storix.portalapi.model.dto.purchaser.domain;
 
 public class PurchaserDto {
     public PurchaserDto() {}

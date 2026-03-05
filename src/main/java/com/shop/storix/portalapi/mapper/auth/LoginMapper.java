@@ -22,7 +22,6 @@ public interface LoginMapper {
     );
     List<AuthDto.Role>findUserRoleByLoginNo (AuthDto.Login login);
     int countDuplicateUser (@Param("id") String loginId, String phoneNumber);
-    void insertPurchaserProfile (PurchaserDto.Purchaser purchaserDto);
     Optional<AuthDto.Login> findLoginByLoginId (String id);
     Optional<AuthDto.Login> findLoginByUserLoginNo (String userLoginNo);
     List<AuthDto.Role> findUserRoleByLoginId (AuthDto.Login login);

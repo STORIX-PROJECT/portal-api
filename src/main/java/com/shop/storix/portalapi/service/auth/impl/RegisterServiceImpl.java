@@ -1,8 +1,9 @@
 package com.shop.storix.portalapi.service.auth.impl;
 
 import com.shop.storix.portalapi.mapper.auth.LoginMapper;
+import com.shop.storix.portalapi.mapper.purchaser.PurchaserMapper;
 import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
-import com.shop.storix.portalapi.model.dto.auth.domain.PurchaserDto;
+import com.shop.storix.portalapi.model.dto.purchaser.domain.PurchaserDto;
 import com.shop.storix.portalapi.service.auth.RegisterService;
 import com.shop.storix.portalapi.util.UuidUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RegisterServiceImpl implements RegisterService {
     private final LoginMapper loginMapper;
+    private final PurchaserMapper purchaserMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -41,6 +43,6 @@ public class RegisterServiceImpl implements RegisterService {
                 dto.nickname(),
                 dto.phoneNumber());
 
-        loginMapper.insertPurchaserProfile(purchaserDto);
+        purchaserMapper.insertPurchaserProfile(purchaserDto);
     }
 }

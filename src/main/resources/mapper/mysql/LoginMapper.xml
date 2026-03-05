@@ -107,23 +107,6 @@
         OR pr.phone_number = #{phoneNumber}
     </select>
 
-    <insert id="insertPurchaserProfile"
-            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.PurchaserDto$Purchaser"
-    >
-        INSERT INTO PURCHASER_PROFILE (
-            purchaser_profile_no,
-            user_login_no,
-            nickname,
-            phone_number
-        )
-        VALUES (
-        #{purchaserProfileNo},
-        #{userLoginNo},
-        #{nickname},
-        #{phoneNumber}
-        )
-    </insert>
-
     <select id="findLoginByLoginId"
             resultType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$Login">
         SELECT

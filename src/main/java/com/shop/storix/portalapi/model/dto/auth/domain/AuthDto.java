@@ -67,5 +67,4 @@ public class AuthDto {
     public record AuthUser(Login login, List<Role> roles) {
     }
 
-
 }
