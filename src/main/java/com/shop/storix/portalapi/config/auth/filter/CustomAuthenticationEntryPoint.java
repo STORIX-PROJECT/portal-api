@@ -2,7 +2,7 @@ package com.shop.storix.portalapi.config.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shop.storix.portalapi.config.auth.exception.JwtAuthenticationException;
-import com.shop.storix.portalapi.controller.admin.ApiResponse;
+import com.shop.storix.portalapi.common.ApiResponse;
 import com.shop.storix.portalapi.model.dto.auth.TokenStatus;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

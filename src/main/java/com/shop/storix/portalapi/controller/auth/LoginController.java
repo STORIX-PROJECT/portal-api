@@ -1,8 +1,8 @@
 package com.shop.storix.portalapi.controller.auth;
 
 
-import com.shop.storix.portalapi.controller.admin.ApiResponse;
-import com.shop.storix.portalapi.model.dto.auth.request.SignUpRequest;
+import com.shop.storix.portalapi.common.ApiResponse;
+import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
 import com.shop.storix.portalapi.service.auth.facade.AuthService;
 import com.shop.storix.portalapi.service.auth.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +28,7 @@ public class LoginController {
             description = "사용자 정보를 받아 회원가입을 진행합니다."
     )
     @PostMapping
-    public ResponseEntity<ApiResponse<?>> signUp(@RequestBody SignUpRequest dto)
+    public ResponseEntity<ApiResponse<String>> signUp(@RequestBody AuthDto.SignUpRequest dto)
     {
         registerService.signUp(dto);
 
@@ -43,7 +43,7 @@ public class LoginController {
             security = @SecurityRequirement(name = "refreshCookie")
     )
     @PostMapping("/reissue")
-    public ResponseEntity<ApiResponse<?>> reissueRefreshToken (HttpServletRequest request , HttpServletResponse response)
+    public ResponseEntity<ApiResponse<String>> reissueRefreshToken (HttpServletRequest request , HttpServletResponse response)
     {
         authService.reissueToken(request,response);
         return ResponseEntity.ok(

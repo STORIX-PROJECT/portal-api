@@ -1,10 +1,9 @@
 package com.shop.storix.portalapi.service.auth.impl;
 
 import com.shop.storix.portalapi.mapper.auth.LoginMapper;
-import com.shop.storix.portalapi.model.dto.auth.domain.Login;
-import com.shop.storix.portalapi.model.dto.auth.domain.PurchaserProfile;
-import com.shop.storix.portalapi.model.dto.auth.domain.UserRole;
-import com.shop.storix.portalapi.model.dto.auth.request.SignUpRequest;
+import com.shop.storix.portalapi.mapper.purchaser.PurchaserMapper;
+import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
+import com.shop.storix.portalapi.model.dto.purchaser.domain.PurchaserDto;
 import com.shop.storix.portalapi.service.auth.RegisterService;
 import com.shop.storix.portalapi.util.UuidUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RegisterServiceImpl implements RegisterService {
     private final LoginMapper loginMapper;
+    private final PurchaserMapper purchaserMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
-    public void signUp(SignUpRequest dto) {
+    public void signUp(AuthDto.SignUpRequest dto) {
         int chkVal = loginMapper.countDuplicateUser(dto.id(), dto.phoneNumber());
         if (chkVal > 0) {
            // throw new Exception(ErrorCode.DUPLICATE_USER);
@@ -29,20 +29,20 @@ public class RegisterServiceImpl implements RegisterService {
         String userLoginNo = UuidUtil.randomUuid();          // VARCHAR(36)
         String purchaserProfileNo = UuidUtil.randomUuid();   // VARCHAR(36)
         // 암호화
-        String encodedPw = passwordEncoder.encode(dto.pw());
+        String encodedPw = passwordEncoder.encode(dto.password());
 
-        Login login = new Login(userLoginNo, dto.id(), encodedPw, "ACTIVE");
+        AuthDto.Login login = new AuthDto.Login(userLoginNo, dto.id(), encodedPw, "ACTIVE");
         loginMapper.insertUserLogin(login);
 
-        UserRole userRole = new UserRole(userLoginNo, "ROLE_001");// HACK: 임시로 역할 넣는 거 구현
+        AuthDto.UserRole userRole = new AuthDto.UserRole(userLoginNo, "ROLE_001");// HACK: 임시로 역할 넣는 거 구현
         loginMapper.insertUserRole(userRole);
 
-        PurchaserProfile purchaser = new PurchaserProfile(
+        PurchaserDto.Purchaser purchaserDto = new PurchaserDto.Purchaser(
                 purchaserProfileNo,
                 userLoginNo,
                 dto.nickname(),
                 dto.phoneNumber());
 
-        loginMapper.insertPurchaserProfile(purchaser);
+        purchaserMapper.insertPurchaserProfile(purchaserDto);
     }
 }
