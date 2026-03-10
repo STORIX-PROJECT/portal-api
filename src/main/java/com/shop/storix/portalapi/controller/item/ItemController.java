@@ -3,10 +3,6 @@ package com.shop.storix.portalapi.controller.item;
 import com.shop.storix.portalapi.controller.admin.ApiResponse;
 import com.shop.storix.portalapi.model.dto.item.request.CategorySearchRequest;
 import com.shop.storix.portalapi.model.dto.item.request.ItemSearchRequest;
-
-import com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailDto;
-
-import com.shop.storix.portalapi.model.dto.item.response.option.ItemDto;
 import com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchDto;
 import com.shop.storix.portalapi.service.item.facade.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
