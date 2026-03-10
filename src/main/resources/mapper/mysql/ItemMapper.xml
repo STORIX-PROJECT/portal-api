@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shop.storix.portalapi.mapper.item.ItemMapper">
+
+    <select id="searchItem" resultType="com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchDto$ItemSearchResponse">
+        SELECT
+        i.ITEM_NO AS itemNo,
+        i.ITEM_NAME AS itemName,
+        MIN(op.PRICE) AS price,
+        i.ITEM_STATUS AS itemStatus,
+        img.IMG_URL AS imgUrl,
+        CASE WHEN i.CREATED_DT >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 15 DAY), '%Y%m%d') THEN true ELSE false END AS isNew,
+        COUNT(DISTINCT od.ORDER_NO) AS orderCount,
+        COUNT(DISTINCT rv.REVIEW_NO) AS reviewCount
+        FROM ITEM i
+        LEFT JOIN ITEM_OPTION_GROUP og ON og.ITEM_NO = i.ITEM_NO
+        LEFT JOIN ITEM_OPTION op ON op.GROUP_NO = og.GROUP_NO
+        LEFT JOIN ITEM_IMAGES img ON img.ITEM_NO = i.ITEM_NO AND img.PRIMARY_YN = 'Y'
+
+        LEFT JOIN ORDER_DETAIL od ON od.ITEM_NO = i.ITEM_NO
+        LEFT JOIN `ORDER` o ON o.ORDER_NO = od.ORDER_NO AND o.ORDER_STATUS = "PAID"
+
+
+        LEFT JOIN ITEM_CATEGORY_MAPPING icm ON icm.ITEM_NO = i.ITEM_NO
+        LEFT JOIN ITEM_REVIEW rv ON rv.ITEM_NO = i.ITEM_NO
+        WHERE i.ITEM_STATUS IN ('ACTIVE', 'INACTIVE')
+        AND i.ITEM_NAME LIKE CONCAT('%', #{searchWord}, '%')
+
+        <if test="categoryNos != null and !categoryNos.isEmpty()">
+            AND icm.CATEGORY_NO IN
+            <foreach collection="categoryNos" item="no" open="(" separator="," close=")">
+                #{no}
+            </foreach>
+        </if>
+
+        GROUP BY i.ITEM_NO, i.ITEM_NAME, i.ITEM_STATUS,img.IMG_URL,i.CREATED_DT
+
+        <choose>
+            <when test="sortType == 'PRICE_ASC'"> ORDER BY price ASC </when>
+            <when test="sortType == 'PRICE_DESC'"> ORDER BY price DESC </when>
+            <when test="sortType == 'BEST'"> ORDER BY orderCount DESC</when>
+            <otherwise> ORDER BY i.CREATED_DT DESC </otherwise>
+        </choose>
+
+        <if test="page != null and size != null">
+            LIMIT #{size} OFFSET ${(page - 1) * size}
+        </if>
+    </select>
+
+
+    <select id="searchCategory" resultType="com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchDto$ItemSearchResponse">
+        SELECT
+        i.ITEM_NO AS itemNo,
+        i.ITEM_NAME AS itemName,
+        MIN(op.PRICE) AS price,
+        i.ITEM_STATUS AS itemStatus,
+        img.IMG_URL AS imgUrl,
+        COUNT(DISTINCT rv.REVIEW_NO) AS reviewCount,
+        COUNT(DISTINCT od.ORDER_NO) AS orderCount,
+        CASE WHEN EXISTS ( SELECT * FROM ITEM_CATEGORY_MAPPING icm2 WHERE icm2.ITEM_NO = i.ITEM_NO AND icm2.CATEGORY_NO IN
+        <foreach collection="categoryNos" item="no" open="(" separator="," close=")">
+            #{no}
+        </foreach>)
+
+        AND i.CREATED_DT >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 15 DAY), '%Y%m%d') THEN true ELSE false END AS isNew
+        FROM ITEM i
+        JOIN ITEM_CATEGORY_MAPPING icm ON icm.ITEM_NO = i.ITEM_NO
+
+
+        LEFT JOIN ORDER_DETAIL od ON od.ITEM_NO = i.ITEM_NO
+        LEFT JOIN `ORDER` o ON o.ORDER_NO = od.ORDER_NO AND o.ORDER_STATUS = "PAID"
+
+
+        LEFT JOIN ITEM_OPTION_GROUP og ON og.ITEM_NO = i.ITEM_NO
+        LEFT JOIN ITEM_OPTION op ON op.GROUP_NO = og.GROUP_NO
+        LEFT JOIN ITEM_IMAGES img ON img.ITEM_NO = i.ITEM_NO AND img.PRIMARY_YN = 'Y'
+        LEFT JOIN ITEM_REVIEW rv ON rv.ITEM_NO = i.ITEM_No
+        WHERE i.ITEM_STATUS IN ('ACTIVE', 'INACTIVE')
+
+        <if test="categoryNos != null and !categoryNos.isEmpty()">
+            AND icm.CATEGORY_NO IN
+            <foreach collection="categoryNos" item="cateNo" open="(" separator="," close=")">
+                #{cateNo}
+            </foreach>
+        </if>
+
+        GROUP BY i.ITEM_NO,
+        i.ITEM_NAME,
+        i.ITEM_STATUS,
+        img.IMG_URL,
+        i.CREATED_DT
+
+        <choose>
+            <when test="sortType == 'PRICE_ASC'"> ORDER BY price ASC </when>
+            <when test="sortType == 'PRICE_DESC'"> ORDER BY price DESC </when>
+            <when test="sortType == 'BEST'"> ORDER BY orderCount DESC</when>
+            <otherwise> ORDER BY i.CREATED_DT DESC </otherwise>
+        </choose>
+    </select>
+
+</mapper>
