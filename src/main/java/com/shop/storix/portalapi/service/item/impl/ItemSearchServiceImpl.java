@@ -1,6 +1,5 @@
 package com.shop.storix.portalapi.service.item.impl;
 
-import ch.qos.logback.core.util.StringUtil;
 import com.shop.storix.portalapi.mapper.item.ItemMapper;
 import com.shop.storix.portalapi.model.dto.item.request.ItemSearchRequest;
 import com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchDto;
