@@ -7,5 +7,6 @@ import java.util.List;
 
 @Mapper
 public interface ItemMapper {
+
     List<ItemSearchDto.ItemCategoryResponse> searchCategory(CategorySearchRequest request);
 }

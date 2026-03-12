@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -22,12 +21,12 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
     @Override
     public List<ItemSearchDto.ItemCategoryResponse> categorySearch(CategorySearchRequest request) {
-        if (request == null || CollectionUtils.isEmpty(request.categoryNos())) {
-            log.warn("Category search validation failed - categoryNos is Missing");
-            throw new IllegalArgumentException("카테고리 번호를 입력해주세요.");
-        }
-        log.info("Category search started - CategoryNos : {}",request.categoryNos());
+        log.info("Category search started - CategoryNos : {}",request != null ? request.categoryNos() : null);
         try {
+            if (request == null || CollectionUtils.isEmpty(request.categoryNos())) {
+                log.warn("Category search validation failed - categoryNos is Missing");
+                throw new IllegalArgumentException("카테고리 번호를 입력해주세요.");
+            }
             List<ItemSearchDto.ItemCategoryResponse> categoryItem = itemMapper.searchCategory(request);
             if (CollectionUtils.isEmpty(categoryItem)) {
                 log.warn("Category search no result - CategoryNos : {}",request.categoryNos());

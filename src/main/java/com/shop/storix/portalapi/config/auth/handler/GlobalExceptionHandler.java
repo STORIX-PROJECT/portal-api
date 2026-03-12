@@ -1,7 +1,6 @@
 package com.shop.storix.portalapi.config.auth.handler;
 
 import com.shop.storix.portalapi.controller.admin.ApiResponse;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

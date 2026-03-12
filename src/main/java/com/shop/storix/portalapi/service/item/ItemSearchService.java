@@ -2,8 +2,6 @@ package com.shop.storix.portalapi.service.item;
 
 import com.shop.storix.portalapi.model.dto.item.request.CategorySearchRequest;
 import com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchDto;
-
-
 import java.util.List;
 
 public interface ItemSearchService {
