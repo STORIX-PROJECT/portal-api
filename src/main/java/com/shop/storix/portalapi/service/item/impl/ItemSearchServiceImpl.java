@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
 import java.util.List;
 
 @Slf4j
@@ -21,33 +24,26 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     @Override
     public List<ItemSearchDto.ItemSearchResponse> searchItem(ItemSearchRequest request) {
         String searchWord = request.searchWord();
-        log.info("검색어 검증 시작 : {}", searchWord);
-
+        log.info("Item search start - searchWord : {}", searchWord);
         try {
-            if (searchWord == null || searchWord.trim().isEmpty()) {
-                log.warn("검증 실패 : 검색어 누락");
-                throw new IllegalArgumentException("검색어를 입력해주세요.");
-            }
-            if (searchWord.trim().length() < 2) {
-                log.warn("검증 실패 : 검색 글자 수 부족 ({})", searchWord);
-                throw new IllegalArgumentException("2글자 이상 입력해주세요.");
+            if (!StringUtils.hasText(searchWord) || searchWord.trim().length() < 2) {
+                log.warn("Item search validation failed - searchWord: {}", searchWord);
+                throw new IllegalArgumentException("검색어를 2글자 이상 입력해주세요.");
             }
 
             List<ItemSearchDto.ItemSearchResponse> itemList = itemMapper.searchItem(request);
-
-            if (itemList == null || itemList.isEmpty()) {
-                log.warn("검색 결과 없음 : {}", searchWord);
+            if (CollectionUtils.isEmpty(itemList)) {
+                log.warn("Item search no result - searchWord : {}",searchWord);
                 throw new IllegalArgumentException("검색 결과가 없습니다.");
             }
 
-            log.info("검색 완료 : {}",itemList);
+            log.info("Item search completed - resultCount : {}",itemList.size());
             return itemList;
-
         } catch (IllegalArgumentException e) {
-            log.error("비즈니스 로직 예외 발생 : {}", e.getMessage());
+            log.warn("Item search failed - {}",e.getMessage());
             throw e;
         } catch (Exception e) {
-            log.error("시스템 에러 발생", e);
+            log.warn("Item search error",e);
             throw e;
         }
     }
