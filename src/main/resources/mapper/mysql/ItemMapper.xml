@@ -40,7 +40,6 @@
                 #{no}
                 </foreach>
         </if>
-
          GROUP  BY ITEM.ITEM_NO, ITEM.ITEM_NAME, ITEM.ITEM_STATUS, IMG.IMG_URL
 
         <choose>
