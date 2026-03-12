@@ -1,6 +1,7 @@
 package com.shop.storix.portalapi.service.item.impl;
 
 import com.shop.storix.portalapi.mapper.item.ItemMapper;
+import com.shop.storix.portalapi.model.dto.item.request.CategorySearchRequest;
 import com.shop.storix.portalapi.model.dto.item.request.ItemSearchRequest;
 import com.shop.storix.portalapi.model.dto.item.request.OptionValidRequest;
 import com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailDto;
@@ -51,8 +52,8 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 //        }
 //        return categoryList;
 //    }
-//
-//
+
+
 //    @Override
 //    public ItemDetailDto.ItemDetailWithImgResponse detailItem(Long itemNo) {
 //        ItemDetailDto.ItemDetailResponse detail = itemMapper.detailItem(itemNo);

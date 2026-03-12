@@ -1,5 +1,6 @@
 package com.shop.storix.portalapi.service.item;
 
+import com.shop.storix.portalapi.model.dto.item.request.CategorySearchRequest;
 import com.shop.storix.portalapi.model.dto.item.request.ItemSearchRequest;
 import com.shop.storix.portalapi.model.dto.item.request.OptionValidRequest;
 import com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailDto;

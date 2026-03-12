@@ -1,6 +1,7 @@
 package com.shop.storix.portalapi.controller.item;
 
 import com.shop.storix.portalapi.controller.admin.ApiResponse;
+import com.shop.storix.portalapi.model.dto.item.request.CategorySearchRequest;
 import com.shop.storix.portalapi.model.dto.item.request.ItemSearchRequest;
 import com.shop.storix.portalapi.model.dto.item.request.OptionValidRequest;
 import com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailDto;
@@ -40,7 +41,7 @@ public class ItemController {
 //        return ApiResponse.ok(itemService.categorySearch(request));
 //    }
 //
-//
+
 //    @Operation(
 //            summary = "상품 상세정보 조회",
 //            description = "상품 번호를 통해 해당 상품의 상세 정보를 조회합니다."
