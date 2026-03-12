@@ -13,8 +13,8 @@ import java.util.List;
 public interface ItemSearchService {
     List<ItemSearchDto.ItemSearchResponse> searchItem(ItemSearchRequest request);
 
-//    List<ItemSearchDto.ItemSearchResponse> categorySearch(CategorySearchRequest request);
-//
+    List<ItemSearchDto.ItemCategoryResponse> categorySearch(CategorySearchRequest request);
+
 //    ItemDetailDto.ItemDetailWithImgResponse detailItem(Long itemNo);
 //
 //    List<ItemOptionDto.ItemOptionResponse> optionItem(Long itemNo);

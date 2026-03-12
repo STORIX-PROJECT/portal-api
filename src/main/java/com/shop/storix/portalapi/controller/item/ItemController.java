@@ -32,15 +32,15 @@ public class ItemController {
     }
 
 
-//    @Operation(
-//            summary = "카테고리별 상품 조회",
-//            description = "카테고리 번호를 통해 해당 카테고리에 속한 상품 목록을 조회합니다."
-//    )
-//    @GetMapping("/category")
-//    public ApiResponse<List<ItemSearchDto.ItemSearchResponse>> searchCategory(@ModelAttribute CategorySearchRequest request) {
-//        return ApiResponse.ok(itemService.categorySearch(request));
-//    }
-//
+    @Operation(
+            summary = "카테고리별 상품 조회",
+            description = "카테고리 번호를 통해 해당 카테고리에 속한 상품 목록을 조회합니다."
+    )
+    @GetMapping("/category")
+    public ApiResponse<List<ItemSearchDto.ItemCategoryResponse>> searchCategory(@ModelAttribute CategorySearchRequest request) {
+        return ApiResponse.ok(itemService.categorySearch(request));
+    }
+
 
 //    @Operation(
 //            summary = "상품 상세정보 조회",

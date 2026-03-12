@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface ItemMapper {
     List<ItemSearchDto.ItemSearchResponse> searchItem(ItemSearchRequest request);
-//    List<ItemSearchDto.ItemSearchResponse> searchCategory(CategorySearchRequest request);
+    List<ItemSearchDto.ItemCategoryResponse> searchCategory(CategorySearchRequest request);
 //    ItemDetailDto.ItemDetailResponse detailItem(Long itemNo);
 //    List<String> imgUrls(Long itemNo);
 //    List<ItemOptionDto.ItemOptionDetailResponse> optionItem(Long itemNo);

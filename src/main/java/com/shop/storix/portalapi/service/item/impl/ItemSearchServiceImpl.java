@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class ItemSearchServiceImpl implements ItemSearchService {
     private final ItemMapper itemMapper;
 
-
     @Override
     public List<ItemSearchDto.ItemSearchResponse> searchItem(ItemSearchRequest request) {
         String searchWord = request.searchWord();
@@ -39,19 +38,18 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         if (itemList == null || itemList.isEmpty()) {
             throw new IllegalArgumentException("검색 결과가 없습니다.");
         }
-
        return itemList;
     }
 
-//
-//    @Override
-//    public List<ItemSearchDto.ItemSearchResponse> categorySearch(CategorySearchRequest request) {
-//        List<ItemSearchDto.ItemSearchResponse> categoryList = itemMapper.searchCategory(request);
-//        if(categoryList == null || categoryList.isEmpty()) {
-//            throw new IllegalArgumentException("검색 결과가 없습니다.");
-//        }
-//        return categoryList;
-//    }
+
+    @Override
+    public List<ItemSearchDto.ItemCategoryResponse> categorySearch(CategorySearchRequest request) {
+        List<ItemSearchDto.ItemCategoryResponse> categoryList = itemMapper.searchCategory(request);
+        if(categoryList == null || categoryList.isEmpty()) {
+            throw new IllegalArgumentException("검색 결과가 없습니다.");
+        }
+        return categoryList;
+    }
 
 
 //    @Override

@@ -56,4 +56,55 @@
     </select>
 
 
+    <select id="searchCategory" resultType="com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchDto$ItemCategoryResponse">
+        SELECT  ITEM.ITEM_NO AS itemNo
+             ,  ITEM.ITEM_NAME AS itemName
+             ,  MIN(ITOP.PRICE) AS price
+             ,  ITEM.ITEM_STATUS AS itemStatus
+             ,  IMG.IMG_URL AS imgUrl
+             ,  CASE  WHEN ITEM.CREATED_DT >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 15 DAY), '%Y%m%d')
+                      THEN TRUE
+                      ELSE FALSE
+                       END AS isNew
+             ,  COUNT(DISTINCT ORD.ORDER_NO) AS orderCount
+             ,  COUNT(DISTINCT ITRV.REVIEW_NO) AS reviewCount
+          FROM  ITEM ITEM
+          JOIN  ITEM_CATEGORY_MAPPING ITCM
+            ON  ITCM.ITEM_NO = ITEM.ITEM_NO
+          LEFT  JOIN ORDER_DETAIL ORDE
+            ON  ORDE.ITEM_NO = ITEM.ITEM_NO
+          LEFT  JOIN `ORDER` ORD
+            ON  ORD.ORDER_NO = ORDE.ORDER_NO
+           AND  ORD.ORDER_STATUS = 'PAID'
+          LEFT  JOIN ITEM_OPTION_GROUP ITOG
+            ON  ITOG.ITEM_NO = ITEM.ITEM_NO
+          LEFT  JOIN ITEM_OPTION ITOP
+            ON  ITOP.GROUP_NO = ITOG.GROUP_NO
+          LEFT  JOIN ITEM_IMAGES IMG
+            ON  IMG.ITEM_NO = ITEM.ITEM_NO
+           AND  IMG.PRIMARY_YN = 'Y'
+          LEFT  JOIN ITEM_REVIEW ITRV
+            ON  ITRV.ITEM_NO = ITEM.ITEM_NO
+         WHERE  ITEM.ITEM_STATUS IN ('ACTIVE', 'INACTIVE')
+         <if test="categoryNos != null and !categoryNos.isEmpty()">
+                AND  ITCM.CATEGORY_NO IN
+             <foreach collection="categoryNos" item="no" open="(" separator="," close=")">
+                #{no}
+        </foreach>
+        </if>
+        GROUP  BY ITEM.ITEM_NO, ITEM.ITEM_NAME, ITEM.ITEM_STATUS, IMG.IMG_URL, ITEM.CREATED_DT
+        <choose>
+            <when test="sortType == 'PRICE'"> ORDER BY price DESC </when>
+            <when test="sortType == 'BEST'"> ORDER BY orderCount DESC </when>
+            <otherwise> ORDER BY ITEM.CREATED_DT DESC </otherwise>
+        </choose>
+
+        <if test="page != null and size != null">
+            LIMIT #{size} OFFSET ${(page - 1) * size}
+        </if>
+    </select>
+
+
+
+
 </mapper>

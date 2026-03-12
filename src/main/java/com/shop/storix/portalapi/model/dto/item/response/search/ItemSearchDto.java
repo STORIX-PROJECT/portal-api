@@ -14,4 +14,15 @@ public class ItemSearchDto {
             Integer orderCount,
             Integer reviewCount
     ) {}
+
+    public record ItemCategoryResponse (
+            Long itemNo,
+            String itemName,
+            Integer price,
+            String itemStatus,
+            String imgUrl,
+            boolean isNew,
+            Integer orderCount,
+            Integer reviewCount
+    ) {}
 }
