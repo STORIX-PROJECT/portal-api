@@ -17,6 +17,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ItemSearchServiceImpl implements ItemSearchService {
+
     private final ItemMapper itemMapper;
 
     @Override

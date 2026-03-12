@@ -4,7 +4,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class ItemSearchDto {
-
     public record ItemCategoryResponse (
             Long itemNo,
             String itemName,

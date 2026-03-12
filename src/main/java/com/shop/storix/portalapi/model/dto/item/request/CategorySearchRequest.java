@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 public record CategorySearchRequest (
-
         @Schema(description = "카테고리 번호",example = "10")
         List<Long> categoryNos,
 
