@@ -11,8 +11,8 @@ public record ItemSearchRequest(
         @Schema(description = "카테고리 번호",example = "[10,11]")
         List<Long> categoryNos,
 
-        @Schema(description = "정렬 타입 최신순:NEW, 낮은가격순:PRICE_ASC, 높은가격순:PRICE_DESC",example = "PRICE_ASC")
-        String sortType, // NEW, PRICE_ASC, PRICE_DESC
+        @Schema(description = "정렬 타입 최신순:NEW, 가격순 : PRICE, 인기순 : BEST",example = "PRICE")
+        String sortType,
 
         @Schema(description = "조회할 페이지",example = "1")
         Integer page,
