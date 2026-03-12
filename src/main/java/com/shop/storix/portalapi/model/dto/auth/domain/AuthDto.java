@@ -1,5 +1,6 @@
 package com.shop.storix.portalapi.model.dto.auth.domain;
 
+import com.shop.storix.portalapi.model.dto.auth.AccountStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import org.apache.ibatis.type.Alias;
@@ -14,7 +15,8 @@ public class AuthDto {
             (String userLoginNo,
              String id,
              String password,
-             String active){}
+             AccountStatus active,
+             int failCount){}
 
     @Alias("OAuthLogin")
     public record OAuthLogin

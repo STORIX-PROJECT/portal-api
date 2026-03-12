@@ -3,6 +3,7 @@ package com.shop.storix.portalapi.config.auth;
 import com.shop.storix.portalapi.config.auth.filter.*;
 import com.shop.storix.portalapi.config.auth.handler.FailureHandler;
 import com.shop.storix.portalapi.config.auth.handler.SuccessHandler;
+import com.shop.storix.portalapi.service.auth.LoginCheckService;
 import com.shop.storix.portalapi.service.auth.facade.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
@@ -51,6 +52,7 @@ public class SecurityConfig {
     private final SuccessHandler successHandler;
     private final FailureHandler failureHandler;
     private final JwtProvider jwtProvider;
+    private final LoginCheckService loginCheckService;
 
     //HACK: filterChain 강화해주세요.
     @Bean
@@ -107,10 +109,10 @@ public class SecurityConfig {
     /* 기본 인증 검증 및 기본 provider */
     @Bean
     public AuthenticationManager authenticationManager() {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(localLoginService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
-
-        return new ProviderManager(authenticationProvider);
+        CustomAuthenticationProvider provider =
+                new CustomAuthenticationProvider(localLoginService, loginCheckService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return new ProviderManager(provider);
     }
 
     /*Custom 로그인 필터*/

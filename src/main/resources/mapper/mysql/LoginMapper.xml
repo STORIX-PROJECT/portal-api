@@ -36,12 +36,12 @@
     <insert id="insertUserRole"
             parameterType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$UserRole">
         INSERT INTO USER_ROLE (
-        user_login_no,
-        role_cd
+            user_login_no,
+            role_cd
         )
         VALUES (
-        #{userLoginNo},
-        #{roleCd}
+            #{userLoginNo},
+            #{roleCd}
         )
     </insert>
 
@@ -51,13 +51,13 @@
             ul.user_login_no,
             ul.id,
             ul.password,
-            ul.active
+            ul.active,
+            ul.fail_count
         FROM USER_OAUTH uo
         JOIN USER_LOGIN ul
         ON uo.user_login_no = ul.user_login_no
         WHERE uo.oauth_provider_id = #{oauthProviderId}
             AND uo.oauth_provider = #{oauthProvider}
-            AND ul.active = 'ACTIVE'
     </select>
 
     <select id="findOAuthLoginByOAuthInfo"
@@ -113,10 +113,10 @@
             ul.user_login_no,
             ul.id,
             ul.password,
-            ul.active
+            ul.active,
+            ul.fail_count
         FROM USER_LOGIN ul
         WHERE ul.id = #{id}
-        AND ul.active = 'ACTIVE'
     </select>
 
     <select id="findLoginByUserLoginNo"
@@ -125,10 +125,29 @@
         ul.user_login_no,
         ul.id,
         ul.password,
-        ul.active
+        ul.active,
+        ul.fail_count
         FROM USER_LOGIN ul
         WHERE ul.user_login_no = #{userLoginNo}
         AND ul.active = 'ACTIVE'
     </select>
+
+    <update id="increaseFailCount">
+        UPDATE USER_LOGIN
+        SET fail_count = fail_count + 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="resetFailCount">
+        UPDATE USER_LOGIN
+        SET fail_count = 0
+        WHERE id = #{id}
+    </update>
+
+    <update id="lockUserLogin">
+        UPDATE USER_LOGIN
+        SET active = 'LOCKED'
+        WHERE id = #{id}
+    </update>
 
 </mapper>

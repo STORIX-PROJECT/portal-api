@@ -25,4 +25,8 @@ public interface LoginMapper {
     Optional<AuthDto.Login> findLoginByLoginId (String id);
     Optional<AuthDto.Login> findLoginByUserLoginNo (String userLoginNo);
     List<AuthDto.Role> findUserRoleByLoginId (AuthDto.Login login);
+    void increaseFailCount(@Param("id") String loginId);
+    void resetFailCount(@Param("id") String loginId);
+    void lockUserLogin(@Param("id") String loginId);
 }
+

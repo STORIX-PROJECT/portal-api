@@ -1,5 +1,6 @@
 package com.shop.storix.portalapi.config.auth.filter;
 
+import com.shop.storix.portalapi.model.dto.auth.AccountStatus;
 import com.shop.storix.portalapi.model.dto.auth.UserPrincipal;
 import com.shop.storix.portalapi.model.dto.auth.domain.*;
 import com.shop.storix.portalapi.mapper.auth.LoginMapper;
@@ -63,7 +64,7 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
 
         if (optionalLogin.isEmpty()) {
             String loginUuid = UuidUtil.randomUuid();
-            AuthDto.Login unregisteredUser = new AuthDto.Login(loginUuid, userIdentifier, userIdentifier, "active");
+            AuthDto.Login unregisteredUser = new AuthDto.Login(loginUuid, userIdentifier, userIdentifier, AccountStatus.ACTIVE,0);
 
             loginMapper.insertUserLogin(unregisteredUser);
 

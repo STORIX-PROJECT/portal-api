@@ -4,6 +4,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -27,11 +29,21 @@ public class FailureHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+        String errorStatus = resolveErrorStatus(exception);
+
         String redirectUri = UriComponentsBuilder.fromUriString(redirectUrl)
-                .queryParam("error", URLEncoder.encode(exception.getLocalizedMessage()), StandardCharsets.UTF_8)
+                .queryParam("error", URLEncoder.encode(errorStatus, StandardCharsets.UTF_8))
                 .build()
                 .toUriString();
 
         redirectStrategy.sendRedirect(request, response, redirectUri);
+    }
+
+    private String resolveErrorStatus(AuthenticationException exception) {
+        return switch (exception) {
+            case LockedException e -> "USER_LOCKED";
+            case DisabledException e -> "USER_DISABLED";
+            default -> "LOGIN_FAILED";
+        };
     }
 }
