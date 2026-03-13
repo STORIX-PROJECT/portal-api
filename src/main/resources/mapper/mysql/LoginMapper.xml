@@ -7,12 +7,16 @@
         INSERT INTO USER_LOGIN (
             user_login_no,
             id,
-            password
+            password,
+            active,
+            fail_count
         )
         VALUES (
             #{userLoginNo},
             #{id},
-            #{password}
+            #{password},
+            #{active},
+            #{failCount}
         )
     </insert>
 
@@ -122,11 +126,11 @@
     <select id="findLoginByUserLoginNo"
             resultType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$Login">
         SELECT
-        ul.user_login_no,
-        ul.id,
-        ul.password,
-        ul.active,
-        ul.fail_count
+            ul.user_login_no,
+            ul.id,
+            ul.password,
+            ul.active,
+            ul.fail_count
         FROM USER_LOGIN ul
         WHERE ul.user_login_no = #{userLoginNo}
         AND ul.active = 'ACTIVE'
@@ -144,9 +148,9 @@
         WHERE id = #{id}
     </update>
 
-    <update id="lockUserLogin">
+    <update id="updateUserLoginStatus">
         UPDATE USER_LOGIN
-        SET active = 'LOCKED'
+        SET active = #{status}
         WHERE id = #{id}
     </update>
 

@@ -8,12 +8,14 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.function.Consumer;
+
 public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
 
     private final LoginCheckService loginCheckService;
 
     public CustomAuthenticationProvider(LocalLoginService localLoginService,
-                                        LoginCheckService loginCheckService) {
+            LoginCheckService loginCheckService) {
         super(localLoginService);
         this.loginCheckService = loginCheckService;
     }
@@ -21,19 +23,30 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
     @Override
     protected void additionalAuthenticationChecks(
             UserDetails userDetails,
-            UsernamePasswordAuthenticationToken authentication
-    ) throws AuthenticationException {
+            UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
         try {
             // 기존 비밀번호 비교 사용
             super.additionalAuthenticationChecks(userDetails, authentication);
-            UserPrincipal principal = (UserPrincipal) userDetails;
-            loginCheckService.handleLoginSuccess(principal.getLogin().id());
+
+            checkUserDetailsType(userDetails,principal ->
+                loginCheckService.handleLoginSuccess(principal.getLogin().id())
+            );
+
+
 
         } catch (BadCredentialsException e) {
-            UserPrincipal principal = (UserPrincipal) userDetails;
-            int failCount = principal.getLogin().failCount();
-            loginCheckService.handleLoginFailure(principal.getLogin().id(),failCount);
+            checkUserDetailsType(userDetails,principal -> {
+                int failCount = principal.getLogin().failCount();
+                loginCheckService.handleLoginFailure(principal.getLogin().id(), failCount);
+            });
             throw e;
+        }
+    }
+
+    /*userDetails 타입 검증*/
+    private void checkUserDetailsType(Object userDetails, Consumer<UserPrincipal> action) {
+        if (userDetails instanceof UserPrincipal principal && principal.getLogin() != null) {
+            action.accept(principal);
         }
     }
 }

@@ -12,13 +12,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -53,6 +51,7 @@ public class SecurityConfig {
     private final FailureHandler failureHandler;
     private final JwtProvider jwtProvider;
     private final LoginCheckService loginCheckService;
+    private final PasswordEncoder passwordEncoder;
 
     //HACK: filterChain 강화해주세요.
     @Bean
@@ -111,7 +110,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager() {
         CustomAuthenticationProvider provider =
                 new CustomAuthenticationProvider(localLoginService, loginCheckService);
-        provider.setPasswordEncoder(passwordEncoder());
+        provider.setPasswordEncoder(passwordEncoder);
         return new ProviderManager(provider);
     }
 
@@ -129,12 +128,6 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtProvider);
-    }
-
-    /* password 암호화 */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     /*기본 Role Prefix 제거*/

@@ -1,6 +1,7 @@
 package com.shop.storix.portalapi.service.auth.impl;
 
 import com.shop.storix.portalapi.mapper.auth.LoginMapper;
+import com.shop.storix.portalapi.model.dto.auth.AccountStatus;
 import com.shop.storix.portalapi.service.auth.LoginCheckService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class LoginCheckServiceImpl implements LoginCheckService {
 
         // +1 한 값이 5 이상이면 잠금
         if (failCount + 1 >= MAX_FAIL_COUNT) {
-            loginMapper.lockUserLogin(loginId);
+            loginMapper.updateUserLoginStatus(loginId, AccountStatus.LOCKED);
         }
 
     }
