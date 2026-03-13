@@ -11,5 +11,5 @@ import java.util.List;
 public interface ItemMapper {
     ItemDetailDto.ItemDetailResponse detailItem(Long itemNo);
     List<String> imgUrls(Long itemNo);
-//    List<ItemDetailOptionDto.ItemDetailOptionResponse> optionDetail(Long itemNo);
+    List<ItemDetailOptionDto.ItemDetailOptionResponse> optionDetail(Long itemNo);
 }

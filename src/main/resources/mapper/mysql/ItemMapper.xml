@@ -45,7 +45,7 @@
     </select>
 
 
-    <!--    <select id="itemOption" resultType="com.shop.storix.portalapi.model.dto.item.response.option.ItemDto$ItemOptionDetailResponse">
+    <select id="optionDetail" resultType="com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailOptionDto$ItemDetailOptionResponse">
         SELECT
         ITOG.GROUP_NO     AS groupNo,
         ITOG.GROUP_NAME   AS groupName,
@@ -57,6 +57,6 @@
         WHERE ITOG.ITEM_NO = #{itemNo}
         ORDER BY ITOG.GROUP_NO, ITOP.OPTION_NO
     </select>
--->
+
 
 </mapper>

@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ItemSearchService {
      ItemDetailDto.ItemDetailWithImgResponse detailItem(Long itemNo);
-//     List<ItemDetailOptionDto.OptionGroupResponse> detailOption(Long itemNo);
+     List<ItemDetailOptionDto.OptionGroupResponse> detailOption(Long itemNo);
 
 }

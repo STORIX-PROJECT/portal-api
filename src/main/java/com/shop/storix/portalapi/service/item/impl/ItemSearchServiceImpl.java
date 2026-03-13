@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
@@ -58,22 +59,41 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
     }
 
-//    @Override
-//    public List<ItemDetailOptionDto.OptionGroupResponse> detailOption(Long itemNo) {
-//        return itemMapper.optionDetail(itemNo).stream()  // ItemDetailOptionResponse 리스트 반환
-//                .collect(Collectors.groupingBy(
-//                        flat -> new AbstractMap.SimpleEntry<>(flat.groupNo(), flat.groupName()),
-//                        LinkedHashMap::new,
-//                        Collectors.mapping(
-//                                flat -> new ItemDetailOptionDto.OptionResponse(flat.optionNo(), flat.optionName(), flat.price()),
-//                                Collectors.toList()
-//                        )
-//                ))
-//                .entrySet().stream()
-//                .map(e -> new ItemDetailOptionDto.OptionGroupResponse(e.getKey().getKey(), e.getKey().getValue(), e.getValue()))
-//                .toList();
-//    }
-//
+    @Override
+    public List<ItemDetailOptionDto.OptionGroupResponse> detailOption(Long itemNo) {
+        log.info("Item Option detail started - itemNo: {}", itemNo);
+        try {
+            List<ItemDetailOptionDto.ItemDetailOptionResponse> optionList = itemMapper.optionDetail(itemNo);
+
+            if (CollectionUtils.isEmpty(optionList)) {
+                log.warn("Item Option detail not found - itemNo : {}", itemNo);
+                throw new IllegalArgumentException("옵션이 존재하지 않습니다.");
+            }
+
+            List<ItemDetailOptionDto.OptionGroupResponse> result = optionList.stream()
+                    .collect(Collectors.groupingBy(
+                            flat -> new AbstractMap.SimpleEntry<>(flat.groupNo(), flat.groupName()),
+                            LinkedHashMap::new,
+                            Collectors.mapping(
+                                    flat -> new ItemDetailOptionDto.OptionResponse(flat.optionNo(), flat.optionName(), flat.price()),
+                                    Collectors.toList()
+                            )
+                    ))
+                    .entrySet().stream()
+                    .map(e -> new ItemDetailOptionDto.OptionGroupResponse(e.getKey().getKey(), e.getKey().getValue(), e.getValue()))
+                    .toList();
+
+            log.info("Item option detail completed - itemNo: {}, groupCount: {}", itemNo, result.size());
+            return result;
+
+        } catch (IllegalArgumentException e) {
+            log.warn("Item option detail failed - {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("Item option detail error", e);
+            throw e;
+        }
+    }
 
 }
 
