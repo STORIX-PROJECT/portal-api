@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shop.storix.portalapi.mapper.item.ItemMapper">
+
+    <select id="relateItem" resultType="com.shop.storix.portalapi.model.dto.item.response.relate.RelateItemDto$RelateItemResponse">
+        SELECT  ITEM.ITEM_NO AS itemNo
+             ,  ITEM.ITEM_NAME AS itemName
+             ,  MIN(ITOP.PRICE) AS price
+             ,  ITEM.ITEM_STATUS AS itemStatus
+             ,  IMG.IMG_URL AS imgUrl
+             ,  COUNT(DISTINCT ORD.ORDER_NO) AS orderCount
+          FROM  ITEM ITEM
+          JOIN  ITEM_CATEGORY_MAPPING ITCP ON ITCP.ITEM_NO = ITEM.ITEM_NO
+          LEFT  JOIN ITEM_OPTION_GROUP ITOG ON ITOG.ITEM_NO = ITEM.ITEM_NO
+          LEFT  JOIN ITEM_OPTION ITOP ON ITOP.GROUP_NO = ITOG.GROUP_NO
+          LEFT  JOIN ITEM_IMAGES IMG ON IMG.ITEM_NO = ITEM.ITEM_NO
+           AND  IMG.PRIMARY_YN = 'Y'
+          LEFT  JOIN ORDER_DETAIL ORD ON ORD.ITEM_NO = ITEM.ITEM_NO
+         WHERE  ITCP.CATEGORY_NO IN (
+                 SELECT  CATEGORY_NO
+                   FROM  ITEM_CATEGORY_MAPPING
+                  WHERE  ITEM_NO = #{itemNo}
+        )
+           AND  ITEM.ITEM_NO != #{itemNo}
+           AND  ITEM.ITEM_STATUS = 'ACTIVE'
+           AND  ITEM.DELETED_DT IS NULL
+         GROUP  BY ITEM.ITEM_NO, ITEM.ITEM_NAME, IMG.IMG_URL
+         ORDER  BY orderCount DESC
+         LIMIT  10
+    </select>
+</mapper>
