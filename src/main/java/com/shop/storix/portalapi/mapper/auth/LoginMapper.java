@@ -1,5 +1,6 @@
 package com.shop.storix.portalapi.mapper.auth;
 
+import com.shop.storix.portalapi.model.dto.auth.AccountStatus;
 import com.shop.storix.portalapi.model.dto.auth.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -25,4 +26,9 @@ public interface LoginMapper {
     Optional<AuthDto.Login> findLoginByLoginId (String id);
     Optional<AuthDto.Login> findLoginByUserLoginNo (String userLoginNo);
     List<AuthDto.Role> findUserRoleByLoginId (AuthDto.Login login);
+    void increaseFailCount(@Param("id") String loginId);
+    void resetFailCount(@Param("id") String loginId);
+    void updateUserLoginStatus(@Param("id") String id,
+                       @Param("status") AccountStatus status);
 }
+

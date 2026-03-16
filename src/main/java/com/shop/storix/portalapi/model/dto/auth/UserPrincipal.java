@@ -73,7 +73,7 @@ public class UserPrincipal implements UserDetails , OAuth2User {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return login.active() != AccountStatus.LOCKED;
     }
 
     @Override
@@ -83,6 +83,6 @@ public class UserPrincipal implements UserDetails , OAuth2User {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return login.active() != AccountStatus.INACTIVE;
     }
 }

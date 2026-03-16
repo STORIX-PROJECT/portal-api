@@ -1,5 +1,6 @@
 package com.shop.storix.portalapi.config.auth.filter;
 
+import com.shop.storix.portalapi.model.dto.auth.AccountStatus;
 import com.shop.storix.portalapi.model.dto.auth.UserPrincipal;
 import com.shop.storix.portalapi.model.dto.auth.domain.*;
 import com.shop.storix.portalapi.mapper.auth.LoginMapper;
@@ -8,6 +9,7 @@ import com.shop.storix.portalapi.model.dto.auth.ProviderInfo;
 import com.shop.storix.portalapi.model.dto.auth.userInfo.OAuth2UserInfoFactory;
 import com.shop.storix.portalapi.util.UuidUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -26,6 +28,7 @@ import java.util.Optional;
 public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final LoginMapper loginMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -63,7 +66,8 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
 
         if (optionalLogin.isEmpty()) {
             String loginUuid = UuidUtil.randomUuid();
-            AuthDto.Login unregisteredUser = new AuthDto.Login(loginUuid, userIdentifier, userIdentifier, "active");
+            String encodedIdentifier = passwordEncoder.encode(userIdentifier);
+            AuthDto.Login unregisteredUser = new AuthDto.Login(loginUuid, userIdentifier,encodedIdentifier, AccountStatus.ACTIVE,0);
 
             loginMapper.insertUserLogin(unregisteredUser);
 
