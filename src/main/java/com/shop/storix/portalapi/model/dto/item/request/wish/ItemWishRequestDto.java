@@ -1,4 +1,4 @@
-package com.shop.storix.portalapi.model.dto.item.request;
+package com.shop.storix.portalapi.model.dto.item.request.wish;
 
 import lombok.NoArgsConstructor;
 
