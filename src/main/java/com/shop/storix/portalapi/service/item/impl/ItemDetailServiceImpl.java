@@ -1,8 +1,9 @@
 package com.shop.storix.portalapi.service.item.impl;
-import com.shop.storix.portalapi.mapper.item.ItemMapper;
+
+import com.shop.storix.portalapi.mapper.item.ItemDetailMapper;
 import com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailDto;
 import com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailOptionDto;
-import com.shop.storix.portalapi.service.item.ItemSearchService;
+import com.shop.storix.portalapi.service.item.ItemDetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,25 +15,24 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ItemSearchServiceImpl implements ItemSearchService {
-    private final ItemMapper itemMapper;
+@Transactional(readOnly = true)
+public class ItemDetailServiceImpl implements ItemDetailService {
+    private final ItemDetailMapper itemDetailMapper;
 
     @Override
     public ItemDetailDto.ItemDetailWithImgResponse detailItem(Long itemNo) {
         log.info("ItemDetail search started - itemNo : {}",itemNo);
 
         try {
-            ItemDetailDto.ItemDetailResponse detail = itemMapper.detailItem(itemNo);
+            ItemDetailDto.ItemDetailResponse detail = itemDetailMapper.detailItem(itemNo);
             if(detail == null || detail.deletedDt() != null || !"ACTIVE".equals(detail.itemStatus())) {
                 log.warn("ItemDetail search validation failed - itemNo : {}",itemNo);
                 throw new IllegalArgumentException("존재하지 않거나 판매가 중단된 상품입니다.");
             }
-            List<String> imgUrls = itemMapper.imgUrls(itemNo);
+            List<String> imgUrls = itemDetailMapper.imgUrls(itemNo);
             log.info("ItemDetail completed - itemNo : {}",itemNo);
 
             return new ItemDetailDto.ItemDetailWithImgResponse(
@@ -57,19 +57,19 @@ public class ItemSearchServiceImpl implements ItemSearchService {
             throw e;
         }
 
+
     }
 
     @Override
     public List<ItemDetailOptionDto.OptionGroupResponse> detailOption(Long itemNo) {
         log.info("Item Option detail started - itemNo: {}", itemNo);
         try {
-            List<ItemDetailOptionDto.ItemDetailOptionResponse> optionList = itemMapper.optionDetail(itemNo);
+            List<ItemDetailOptionDto.ItemDetailOptionResponse> optionList = itemDetailMapper.optionDetail(itemNo);
 
             if (CollectionUtils.isEmpty(optionList)) {
                 log.warn("Item Option detail not found - itemNo : {}", itemNo);
                 throw new IllegalArgumentException("옵션이 존재하지 않습니다.");
             }
-
             List<ItemDetailOptionDto.OptionGroupResponse> result = optionList.stream()
                     .collect(Collectors.groupingBy(
                             flat -> new AbstractMap.SimpleEntry<>(flat.groupNo(), flat.groupName()),
@@ -96,5 +96,3 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     }
 
 }
-
-

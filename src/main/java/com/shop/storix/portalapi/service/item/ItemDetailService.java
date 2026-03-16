@@ -5,9 +5,8 @@ import com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailOption
 
 import java.util.List;
 
-
-public interface ItemSearchService {
-     ItemDetailDto.ItemDetailWithImgResponse detailItem(Long itemNo);
-     List<ItemDetailOptionDto.OptionGroupResponse> detailOption(Long itemNo);
+public interface ItemDetailService {
+    ItemDetailDto.ItemDetailWithImgResponse detailItem(Long itemNo);
+    List<ItemDetailOptionDto.OptionGroupResponse> detailOption(Long itemNo);
 
 }
