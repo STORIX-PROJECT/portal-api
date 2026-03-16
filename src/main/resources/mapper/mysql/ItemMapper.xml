@@ -3,7 +3,7 @@
 
 <mapper namespace="com.shop.storix.portalapi.mapper.item.ItemMapper">
 
-    <select id="searchItem" resultType="com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchDto$ItemSearchResponse">
+    <select id="searchItem" resultType="com.shop.storix.portalapi.model.dto.item.response.search.ItemDto$ItemSearchResponse">
         SELECT  ITEM.ITEM_NO AS itemNo
              ,  ITEM.ITEM_NAME AS itemName
              ,  MIN(ITOP.PRICE) AS price

@@ -1,8 +1,8 @@
 package com.shop.storix.portalapi.service.item.impl;
 
 import com.shop.storix.portalapi.mapper.item.ItemMapper;
-import com.shop.storix.portalapi.model.dto.item.request.ItemSearchRequest;
-import com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchDto;
+import com.shop.storix.portalapi.model.dto.item.request.ItemSearchDto;
+import com.shop.storix.portalapi.model.dto.item.response.search.ItemDto;
 import com.shop.storix.portalapi.service.item.ItemSearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     private final ItemMapper itemMapper;
 
     @Override
-    public List<ItemSearchDto.ItemSearchResponse> searchItem(ItemSearchRequest request) {
+    public List<ItemDto.ItemSearchResponse> searchItem(ItemSearchDto.ItemSearchRequest request) {
         String searchWord = request.searchWord();
         log.info("Item search start - searchWord : {}", searchWord);
         try {
@@ -30,7 +30,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
                 throw new IllegalArgumentException("검색어를 2글자 이상 입력해주세요.");
             }
 
-            List<ItemSearchDto.ItemSearchResponse> itemList = itemMapper.searchItem(request);
+            List<ItemDto.ItemSearchResponse> itemList = itemMapper.searchItem(request);
             if (CollectionUtils.isEmpty(itemList)) {
                 log.warn("Item search no result - searchWord : {}",searchWord);
                 throw new IllegalArgumentException("검색 결과가 없습니다.");
@@ -46,7 +46,6 @@ public class ItemSearchServiceImpl implements ItemSearchService {
             throw e;
         }
     }
-
 
 }
 
