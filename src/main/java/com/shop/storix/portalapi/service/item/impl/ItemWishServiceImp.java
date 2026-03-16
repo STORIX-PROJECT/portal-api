@@ -1,6 +1,6 @@
 package com.shop.storix.portalapi.service.item.impl;
 
-import com.shop.storix.portalapi.mapper.item.ItemMapper;
+import com.shop.storix.portalapi.mapper.item.ItemWishMapper;
 import com.shop.storix.portalapi.model.dto.item.request.ItemWishRequestDto;
 import com.shop.storix.portalapi.service.item.ItemWishService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class ItemWishServiceImp implements ItemWishService {
-    private final ItemMapper itemMapper;
+    private final ItemWishMapper itemWishMapper;
 
     @Override
     public void deleteWish(ItemWishRequestDto.DeleteWishRequest request) {
@@ -24,12 +24,12 @@ public class ItemWishServiceImp implements ItemWishService {
                 throw new IllegalArgumentException("공백입니다.");
             }
 
-            if (!itemMapper.existsWish(request)) {
+            if (!itemWishMapper.existsWish(request)) {
                 log.warn("Delete Wish Not found - itemNo : {}, userLoginNo : {}", request.itemNo(), request.userLoginNo());
                 throw new IllegalArgumentException("위시가 존재하지 않습니다.");
             }
 
-            itemMapper.deleteWish(request);
+            itemWishMapper.deleteWish(request);
             log.info("Delete Wish Completed - itemNo : {}, userLoginNo : {}", request.itemNo(), request.userLoginNo());
 
         } catch (IllegalArgumentException e) {
