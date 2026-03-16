@@ -1,7 +1,7 @@
 package com.shop.storix.portalapi.controller.item;
 
 import com.shop.storix.portalapi.controller.admin.ApiResponse;
-import com.shop.storix.portalapi.model.dto.item.request.ItemWishRequestDto;
+import com.shop.storix.portalapi.model.dto.item.request.wish.ItemWishRequestDto;
 import com.shop.storix.portalapi.model.dto.item.response.wish.ItemWishResponseDto;
 import com.shop.storix.portalapi.service.item.ItemWishService;
 import io.swagger.v3.oas.annotations.Operation;
