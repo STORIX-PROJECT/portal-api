@@ -1,7 +1,7 @@
 package com.shop.storix.portalapi.controller.item;
 
 import com.shop.storix.portalapi.controller.admin.ApiResponse;
-import com.shop.storix.portalapi.model.dto.item.request.CategorySearchRequest;
+import com.shop.storix.portalapi.model.dto.item.request.search.CateogrySearchDto;
 import com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchDto;
 import com.shop.storix.portalapi.service.item.ItemSearchService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +26,7 @@ public class ItemSearchController {
             description = "카테고리 번호를 통해 해당 카테고리에 속한 상품 목록을 조회합니다."
     )
     @GetMapping("/category")
-    public ApiResponse<List<ItemSearchDto.ItemCategoryResponse>> searchCategory(@ModelAttribute CategorySearchRequest request) {
+    public ApiResponse<List<ItemSearchDto.ItemCategoryResponse>> searchCategory(@ModelAttribute CateogrySearchDto.CategorySearchRequest request) {
         log.info("Category search request - CategoryNos : {}",request.categoryNos());
         List<ItemSearchDto.ItemCategoryResponse> searchCategory = itemSearchService.categorySearch(request);
 
