@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
-public class ItemSearchDto{
+public class ItemSearchRequestDto {
         public record ItemSearchRequest(
                 @Schema(description = "검색어", example = "아디다스")
                 String searchWord,
