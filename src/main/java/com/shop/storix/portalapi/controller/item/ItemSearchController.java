@@ -26,7 +26,7 @@ public class ItemSearchController {
             description = "검색어를 통해 상품을 조회합니다."
     )
     @GetMapping("/search")
-    public ApiResponse<List<ItemSearchResponseDto.ItemSearchResponse>> searchItem(@ModelAttribute ItemSearchRequestDto.ItemSearchRequest request) {
+    public ApiResponse<List<ItemSearchResponseDto.ItemSearchResponse>> searchItem(@RequestBody ItemSearchRequestDto.ItemSearchRequest request) {
         log.info("Item search request - searchWord : {}",request.searchWord());
         List<ItemSearchResponseDto.ItemSearchResponse> searchList = itemSearchService.searchItem(request);
 
