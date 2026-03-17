@@ -36,11 +36,9 @@ import java.util.List;
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
     public static final String PERMITTED_URI[] = {
-            "/login/oauth2/code/google",
-            "/login/oauth2/code/naver",
-            "/login",
+            "/login","/default-ui.css",
             "/v3/**", "/api/v1/auth/**",
-            "/oauth2/**", "/api/v1/login/**",
+            "/oauth2/**", "/api/login/**",
             "/api/v1/admin/**", "/swagger-ui/**",
             "/api/v1/item/**"
     };

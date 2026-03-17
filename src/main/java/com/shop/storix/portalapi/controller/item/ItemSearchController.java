@@ -1,6 +1,7 @@
 package com.shop.storix.portalapi.controller.item;
 
-import com.shop.storix.portalapi.controller.admin.ApiResponse;
+
+import com.shop.storix.portalapi.common.ApiResponse;
 import com.shop.storix.portalapi.model.dto.item.request.ItemSearchRequestDto;
 import com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchResponseDto;
 import com.shop.storix.portalapi.service.item.ItemSearchService;
