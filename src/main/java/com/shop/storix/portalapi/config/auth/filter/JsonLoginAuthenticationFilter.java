@@ -1,7 +1,7 @@
 package com.shop.storix.portalapi.config.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shop.storix.portalapi.model.dto.auth.request.SignInRequest;
+import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,17 +20,17 @@ public class JsonLoginAuthenticationFilter extends AbstractAuthenticationProcess
 
     public JsonLoginAuthenticationFilter() {
         super( PathPatternRequestMatcher.withDefaults()
-                .matcher(HttpMethod.POST,"/api/login"));
+                .matcher(HttpMethod.POST,"/api/v1/login"));
     }
 
     @Override
     public @Nullable Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        SignInRequest signInRequest = objectMapper.readValue(request.getInputStream(), SignInRequest.class);
+        AuthDto.SignInRequest signInRequest = objectMapper.readValue(request.getInputStream(), AuthDto.SignInRequest.class);
 
         UsernamePasswordAuthenticationToken authRequest =
                 new UsernamePasswordAuthenticationToken(
                         signInRequest.id(),
-                        signInRequest.pw()
+                        signInRequest.password()
                 );
         return this.getAuthenticationManager().authenticate(authRequest);
     }

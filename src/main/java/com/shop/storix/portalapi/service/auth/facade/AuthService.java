@@ -1,10 +1,9 @@
 package com.shop.storix.portalapi.service.auth.facade;
 
 import com.shop.storix.portalapi.config.auth.exception.JwtAuthenticationException;
-import com.shop.storix.portalapi.model.dto.auth.AuthUser;
 import com.shop.storix.portalapi.model.dto.auth.TokenStatus;
 import com.shop.storix.portalapi.model.dto.auth.UserPrincipal;
-import com.shop.storix.portalapi.model.dto.auth.domain.Token;
+import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
 import com.shop.storix.portalapi.service.auth.AuthUserService;
 import com.shop.storix.portalapi.service.auth.TokenService;
 import io.jsonwebtoken.Claims;
@@ -45,13 +44,13 @@ public class AuthService {
             throw new JwtAuthenticationException(TokenStatus.INVALID);
         }
 
-        Token saved = tokenService.findById(userLoginNo);
+        AuthDto.Token saved = tokenService.findById(userLoginNo);
 
         if (!refreshToken.equals(saved.refreshToken())) {
             throw new JwtAuthenticationException(TokenStatus.INVALID);
         }
 
-        AuthUser authUser = authUserService.getUserAuth(userLoginNo);
+        AuthDto.AuthUser authUser = authUserService.getUserAuth(userLoginNo);
 
         UserPrincipal userPrincipal = toPrincipal(authUser);
 
@@ -70,7 +69,7 @@ public class AuthService {
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
     }
 
-    private static UserPrincipal toPrincipal(AuthUser authUser) {
+    private static UserPrincipal toPrincipal(AuthDto.AuthUser authUser) {
         return new UserPrincipal(authUser.login(), authUser.roles());
     }
 }

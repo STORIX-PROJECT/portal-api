@@ -1,4 +1,4 @@
-package com.shop.storix.portalapi.controller.admin;
+package com.shop.storix.portalapi.common;
 
 import lombok.Builder;
 
@@ -17,6 +17,7 @@ public record ApiResponse<T>(
                 .data(data)
                 .build();
     }
+
 
     public static <T> ApiResponse<T> fail(String statusCode, String message, T data) {
         return ApiResponse.<T>builder()

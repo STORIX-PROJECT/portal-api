@@ -2,22 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.shop.storix.portalapi.mapper.auth.LoginMapper">
     <insert id="insertUserLogin"
-            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.Login"
+            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$Login"
     >
         INSERT INTO USER_LOGIN (
             user_login_no,
             id,
-            password
+            password,
+            active,
+            fail_count
         )
         VALUES (
             #{userLoginNo},
             #{id},
-            #{pw}
+            #{password},
+            #{active},
+            #{failCount}
         )
     </insert>
 
     <insert id="insertUserOauth"
-            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.OAuthLogin"
+            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$OAuthLogin"
             >
         INSERT INTO USER_OAUTH (
             user_oauth_no,
@@ -34,34 +38,34 @@
     </insert>
 
     <insert id="insertUserRole"
-            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.UserRole">
+            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$UserRole">
         INSERT INTO USER_ROLE (
-        user_login_no,
-        role_cd
+            user_login_no,
+            role_cd
         )
         VALUES (
-        #{userLoginNo},
-        #{roleCd}
+            #{userLoginNo},
+            #{roleCd}
         )
     </insert>
 
     <select id="findLoginByOAuthInfo"
-            resultType="com.shop.storix.portalapi.model.dto.auth.domain.Login">
+            resultType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$Login">
         SELECT
             ul.user_login_no,
             ul.id,
             ul.password,
-            ul.active
+            ul.active,
+            ul.fail_count
         FROM USER_OAUTH uo
         JOIN USER_LOGIN ul
         ON uo.user_login_no = ul.user_login_no
         WHERE uo.oauth_provider_id = #{oauthProviderId}
             AND uo.oauth_provider = #{oauthProvider}
-            AND ul.active = 'ACTIVE'
     </select>
 
     <select id="findOAuthLoginByOAuthInfo"
-            resultType="com.shop.storix.portalapi.model.dto.auth.domain.OAuthLogin">
+            resultType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$OAuthLogin">
         SELECT
             user_oauth_no,
             user_login_no,
@@ -73,8 +77,8 @@
     </select>
 
     <select id = "findUserRoleByLoginNo"
-            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.Login"
-            resultType="com.shop.storix.portalapi.model.dto.auth.domain.Role">
+            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$Login"
+            resultType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$Role">
         SELECT
             r.ROLE_CD,
             r.ROLE_NM,
@@ -85,8 +89,8 @@
     </select>
 
     <select id = "findUserRoleByLoginId"
-            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.Login"
-            resultType="com.shop.storix.portalapi.model.dto.auth.domain.Role">
+            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$Login"
+            resultType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$Role">
         SELECT
             r.ROLE_CD,
             r.ROLE_NM,
@@ -107,46 +111,47 @@
         OR pr.phone_number = #{phoneNumber}
     </select>
 
-    <insert id="insertPurchaserProfile"
-            parameterType="com.shop.storix.portalapi.model.dto.auth.domain.PurchaserProfile"
-    >
-        INSERT INTO PURCHASER_PROFILE (
-            purchaser_profile_no,
-            user_login_no,
-            nickname,
-            phone_number
-        )
-        VALUES (
-        #{purchaserProfileNo},
-        #{userLoginNo},
-        #{nickname},
-        #{phoneNumber}
-        )
-    </insert>
-
     <select id="findLoginByLoginId"
-            resultType="com.shop.storix.portalapi.model.dto.auth.domain.Login">
+            resultType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$Login">
         SELECT
             ul.user_login_no,
             ul.id,
             ul.password,
-            ul.active
+            ul.active,
+            ul.fail_count
         FROM USER_LOGIN ul
         WHERE ul.id = #{id}
-        AND ul.active = 'ACTIVE'
     </select>
 
     <select id="findLoginByUserLoginNo"
-            resultType="com.shop.storix.portalapi.model.dto.auth.domain.Login">
+            resultType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$Login">
         SELECT
-        ul.user_login_no,
-        ul.id,
-        ul.password,
-        ul.active
+            ul.user_login_no,
+            ul.id,
+            ul.password,
+            ul.active,
+            ul.fail_count
         FROM USER_LOGIN ul
         WHERE ul.user_login_no = #{userLoginNo}
         AND ul.active = 'ACTIVE'
     </select>
 
+    <update id="increaseFailCount">
+        UPDATE USER_LOGIN
+        SET fail_count = fail_count + 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="resetFailCount">
+        UPDATE USER_LOGIN
+        SET fail_count = 0
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateUserLoginStatus">
+        UPDATE USER_LOGIN
+        SET active = #{status}
+        WHERE id = #{id}
+    </update>
 
 </mapper>
