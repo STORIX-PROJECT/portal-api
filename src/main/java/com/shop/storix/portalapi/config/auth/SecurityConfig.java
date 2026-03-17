@@ -35,16 +35,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
-
     public static final String PERMITTED_URI[] = {
             "/login/oauth2/code/google",
             "/login/oauth2/code/naver",
             "/login",
             "/v3/**", "/api/v1/auth/**",
-            "/oauth2/**", "/api/login/**",
+            "/oauth2/**", "/api/v1/login/**",
             "/api/v1/admin/**", "/swagger-ui/**",
             "/api/v1/item/**"
-        };
+    };
 
     private final CustomOAuth2LoginService customOAuth2LoginService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
