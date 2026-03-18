@@ -26,7 +26,7 @@ public class ItemSearchController {
             description = "카테고리 번호를 통해 해당 카테고리에 속한 상품 목록을 조회합니다."
     )
     @GetMapping("/category")
-    public ApiResponse<List<ItemSearchDto.ItemCategoryResponse>> searchCategory(@ModelAttribute CateogrySearchDto.CategorySearchRequest request) {
+    public ApiResponse<List<ItemSearchDto.ItemCategoryResponse>> searchCategory(@RequestBody CateogrySearchDto.CategorySearchRequest request) {
         log.info("Category search request - CategoryNos : {}",request.categoryNos());
         List<ItemSearchDto.ItemCategoryResponse> searchCategory = itemSearchService.categorySearch(request);
 
