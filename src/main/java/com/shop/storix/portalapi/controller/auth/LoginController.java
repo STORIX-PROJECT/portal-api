@@ -50,6 +50,19 @@ public class LoginController {
                 ApiResponse.ok("발급 완료")
         );
     }
+    @Operation(
+            summary = "로그아웃",
+            description = "사용자 로그아웃을 진행합니다.",
+            security = @SecurityRequirement(name = "refreshCookie")
+    )
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<String>> signOut (HttpServletRequest request , HttpServletResponse response)
+    {
+        authService.deleteRefreshToken(request);
+        return ResponseEntity.ok(
+                ApiResponse.ok("삭제 완료")
+        );
+    }
 
 
 }

@@ -13,19 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
     private final TokenMapper tokenMapper;
-
     @Transactional
     public void save(AuthDto.Token token) {
         tokenMapper.save(token);
     }
 
-    public AuthDto.Token findById(String identifier) {
-        return tokenMapper.findById(identifier)
+    public AuthDto.Token findById(String userLoginNo) {
+        return tokenMapper.findById(userLoginNo)
                 .orElseThrow(()-> new JwtAuthenticationException(TokenStatus.INVALID));
     }
 
-//
-//    public void deleteById(String identifier) {
-//        tokenMapper.deleteById(identifier);
-//    }
+    public void delete(String refreshToken) {
+        tokenMapper.delete(refreshToken);
+    }
+
 }
