@@ -1,8 +1,7 @@
 package com.shop.storix.portalapi.service.item.impl;
 
 import com.shop.storix.portalapi.mapper.item.ItemMapper;
-import com.shop.storix.portalapi.model.dto.item.request.ItemSearchRequestDto;
-import com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchResponseDto;
+import com.shop.storix.portalapi.model.dto.item.search.ItemSearchDto;
 import com.shop.storix.portalapi.service.item.ItemSearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,33 +21,25 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     private final ItemMapper itemMapper;
 
     @Override
-    public List<ItemSearchResponseDto.ItemSearchResponse> searchItem(ItemSearchRequestDto.ItemSearchRequest request) {
+    public List<ItemSearchDto.ItemSearchResponse> searchItem(ItemSearchDto.ItemSearchRequest request) {
         String searchWord = request.searchWord();
         log.info("Item search start - searchWord : {}", searchWord);
-        try {
+
             if (!StringUtils.hasText(searchWord) || searchWord.trim().length() < 2) {
-                log.warn("Item search validation failed - searchWord: {}", searchWord);
+                log.error("Item search validation failed - searchWord: {}", searchWord);
                 throw new IllegalArgumentException("검색어를 2글자 이상 입력해주세요.");
             }
 
-            List<ItemSearchResponseDto.ItemSearchResponse> itemList = itemMapper.searchItem(request);
+            List<ItemSearchDto.ItemSearchResponse> itemList = itemMapper.searchItem(request);
+
             if (CollectionUtils.isEmpty(itemList)) {
-                log.warn("Item search no result - searchWord : {}",searchWord);
+                log.info("Item search no result - searchWord : {}",searchWord);
                 return Collections.emptyList();
             }
 
             log.info("Item search completed - resultCount : {}",itemList.size());
             return itemList;
-
-        } catch (IllegalArgumentException e) {
-            log.warn("Item search failed - {}",e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            log.warn("Item search error",e);
-            throw e;
-        }
     }
-
 }
 
 

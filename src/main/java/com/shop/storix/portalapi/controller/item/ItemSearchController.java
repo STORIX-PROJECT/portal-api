@@ -2,8 +2,7 @@ package com.shop.storix.portalapi.controller.item;
 
 
 import com.shop.storix.portalapi.common.ApiResponse;
-import com.shop.storix.portalapi.model.dto.item.request.ItemSearchRequestDto;
-import com.shop.storix.portalapi.model.dto.item.response.search.ItemSearchResponseDto;
+import com.shop.storix.portalapi.model.dto.item.search.ItemSearchDto;
 import com.shop.storix.portalapi.service.item.ItemSearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,12 +26,25 @@ public class ItemSearchController {
             description = "검색어를 통해 상품을 조회합니다."
     )
     @GetMapping("/search")
-    public ApiResponse<List<ItemSearchResponseDto.ItemSearchResponse>> searchItem(@RequestBody ItemSearchRequestDto.ItemSearchRequest request) {
-        log.info("Item search request - searchWord : {}",request.searchWord());
-        List<ItemSearchResponseDto.ItemSearchResponse> searchList = itemSearchService.searchItem(request);
+    public ApiResponse<List<ItemSearchDto.ControllerResponse>> searchItem(@RequestBody ItemSearchDto.ItemSearchRequest request) {
 
-        log.info("Item search response ready - resultCount : {}",searchList.size());
-        return ApiResponse.ok(searchList);
+        // 서버 내부 DTO 조회
+        List<ItemSearchDto.ItemSearchResponse> itemSearchList = itemSearchService.searchItem(request);
+
+        // Controller Response 변환
+        List<ItemSearchDto.ControllerResponse> response = itemSearchList.stream()
+                .map(item -> ItemSearchDto.ControllerResponse.builder()
+                        .itemNo(item.itemNo())
+                        .itemName(item.itemName())
+                        .price(item.price())
+                        .itemStatus(item.itemStatus())
+                        .imgUrl(item.imgUrl())
+                        .isNew(item.isNew())
+                        .orderCount(item.orderCount())
+                        .reviewCount(item.reviewCount())
+                        .build())
+                .toList();
+        return ApiResponse.ok(response);
     }
 
 
