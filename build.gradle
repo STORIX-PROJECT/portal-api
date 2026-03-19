@@ -36,7 +36,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-//    implementation 'org.mybatis:mybatis:3.5.19'
     // mybatis
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.0'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-autoconfigure:4.0.0'
@@ -46,6 +45,9 @@ dependencies {
 
     // swagger-ui
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     runtimeOnly 'mysql:mysql-connector-java:8.0.33'
     runtimeOnly 'com.mysql:mysql-connector-j'
