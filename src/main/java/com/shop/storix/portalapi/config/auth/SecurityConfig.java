@@ -77,7 +77,7 @@ public class SecurityConfig {
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .requestMatchers("/api/v1/purchaser/**").hasRole("PURCHASER")
                                 .anyRequest().authenticated()
-                        //.anyRequest().permitAll() // 임시
+                                //.anyRequest().permitAll() // 임시
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(jsonLoginFilter(), UsernamePasswordAuthenticationFilter.class)
