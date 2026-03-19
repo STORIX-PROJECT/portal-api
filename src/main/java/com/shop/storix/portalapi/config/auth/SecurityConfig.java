@@ -42,7 +42,8 @@ public class SecurityConfig {
             "/login",
             "/v3/**", "/api/v1/auth/**",
             "/oauth2/**", "/api/v1/login/**",
-            "/api/v1/admin/**", "/swagger-ui/**"
+            "/api/v1/admin/**", "/swagger-ui/**",
+            "/api/v1/item/**"
     };
     private final CustomOAuth2LoginService customOAuth2LoginService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
