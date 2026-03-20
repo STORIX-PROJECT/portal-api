@@ -1,7 +1,7 @@
 package com.shop.storix.portalapi.service.item;
 
-import com.shop.storix.portalapi.model.dto.item.request.ItemWishRequestDto;
+import com.shop.storix.portalapi.model.dto.item.wish.ItemWishDto;
 
 public interface ItemWishService {
-    void deleteWish(ItemWishRequestDto.DeleteWishRequest request);
+    void deleteWish(ItemWishDto.DeleteWishRequest request);
 }

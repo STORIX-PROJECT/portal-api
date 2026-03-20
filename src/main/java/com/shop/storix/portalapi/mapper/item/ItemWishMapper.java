@@ -1,10 +1,10 @@
 package com.shop.storix.portalapi.mapper.item;
 
-import com.shop.storix.portalapi.model.dto.item.request.ItemWishRequestDto;
+import com.shop.storix.portalapi.model.dto.item.wish.ItemWishDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface ItemWishMapper {
-    boolean existsWish(ItemWishRequestDto.DeleteWishRequest request);
-    void deleteWish(ItemWishRequestDto.DeleteWishRequest request);
+    boolean existsWish(ItemWishDto.DeleteWishRequest request);
+    void deleteWish(ItemWishDto.DeleteWishRequest request);
 }
