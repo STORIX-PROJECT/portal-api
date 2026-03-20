@@ -1,7 +1,7 @@
 package com.shop.storix.portalapi.controller.item;
 
 import com.shop.storix.portalapi.common.ApiResponse;
-import com.shop.storix.portalapi.model.dto.item.response.relate.RelateItemDto;
+import com.shop.storix.portalapi.model.dto.item.relate.RelateItemDto;
 import com.shop.storix.portalapi.service.item.ItemRelateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,13 +27,23 @@ public class ItemRelateController {
             summary = "연관상품 검색",
             description = "연관상품 검색합니다"
     )
+
     @GetMapping("/search/{itemNo}")
     public ResponseEntity<ApiResponse<List<RelateItemDto.RelateItemResponse>>> relateItem(@PathVariable Long itemNo) {
-        log.info("Relate Item search request - itemNo : {}",itemNo);
-        List<RelateItemDto.RelateItemResponse> result = itemRelateService.relateItem(itemNo);
+        log.info("RelateItem search request - itemNo : {}",itemNo);
 
-        log.info("Relate Item search response ready - resultCount : {}",result.size());
-        return ResponseEntity.ok(ApiResponse.ok(result));
+        List<RelateItemDto.RelateDto> relate = itemRelateService.relateItem(itemNo);
+
+        List<RelateItemDto.RelateItemResponse> response = relate.stream()
+                .map(item -> RelateItemDto.RelateItemResponse.builder()
+                        .itemNo(item.itemNo())
+                        .itemName(item.itemName())
+                        .itemStatus(item.itemStatus())
+                        .price(item.price())
+                        .imgUrl(item.imgUrl())
+                        .orderCount(item.orderCount())
+                        .build())
+                .toList();
+        return ResponseEntity.ok(ApiResponse.ok(response));
     }
-
 }
