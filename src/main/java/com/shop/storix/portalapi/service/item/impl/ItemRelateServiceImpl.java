@@ -1,7 +1,7 @@
 package com.shop.storix.portalapi.service.item.impl;
 
 import com.shop.storix.portalapi.mapper.item.ItemMapper;
-import com.shop.storix.portalapi.model.dto.item.response.relate.RelateItemDto;
+import com.shop.storix.portalapi.model.dto.item.relate.RelateItemDto;
 import com.shop.storix.portalapi.service.item.ItemRelateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,24 +20,17 @@ public class ItemRelateServiceImpl implements ItemRelateService {
     private final ItemMapper itemMapper;
 
     @Override
-    public List<RelateItemDto.RelateItemResponse> relateItem(Long itemNo) {
-        log.info("Relate Item search start - itemNo : {}",itemNo);
-        List<RelateItemDto.RelateItemResponse> relate = itemMapper.relateItem(itemNo);
+    public List<RelateItemDto.RelateDto> relateItem(Long itemNo) {
+        log.info("RelateItem search start - itemNo : {}",itemNo);
 
-        try {
-            if(CollectionUtils.isEmpty(relate)) {
-                log.warn("Relate Item no result - itemNo : {}",itemNo);
-                throw new IllegalArgumentException("연관상품이 존재하지 않습니다.");
-            }
+        List<RelateItemDto.RelateDto> relateList = itemMapper.relateItem(itemNo);
 
-            log.info("Relate Item search complete - resultCount : {}",relate.size());
-            return relate;
-        } catch (IllegalArgumentException e) {
-            log.warn("Relate Item search failed - {}",e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            log.warn("Relate Item search error",e);
-            throw e;
+        if(CollectionUtils.isEmpty(relateList)) {
+            log.info("No result");
+            throw new IllegalArgumentException("연관상품이 존재하지 않습니다.");
         }
+
+        log.info("Relate Item search complete - resultCount : {}",relateList.size());
+        return relateList;
     }
 }
