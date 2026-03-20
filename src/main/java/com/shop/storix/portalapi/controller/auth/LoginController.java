@@ -1,8 +1,9 @@
 package com.shop.storix.portalapi.controller.auth;
 
-
 import com.shop.storix.portalapi.common.ApiResponse;
+import com.shop.storix.portalapi.model.dto.auth.MailPurpose;
 import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
+import com.shop.storix.portalapi.service.auth.facade.AccountService;
 import com.shop.storix.portalapi.service.auth.facade.AuthService;
 import com.shop.storix.portalapi.service.auth.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth", description = "인증 및 회원 관리 API")
@@ -22,6 +24,7 @@ public class LoginController {
 
     private final RegisterService registerService;
     private final AuthService authService;
+    private final AccountService accountService;
 
     @Operation(
             summary = "회원가입",
@@ -63,6 +66,35 @@ public class LoginController {
                 ApiResponse.ok("삭제 완료")
         );
     }
+
+    @Operation(
+            summary = "사용자 아이디 찾기",
+            description ="발급 받은 메일코드를 인증하고 해당 이메일로 사용자를 검색합니다."
+    )
+    @GetMapping("/lookup/id")
+    public ResponseEntity<ApiResponse<String>> lookUpUserId(@ModelAttribute AuthDto.VerifyMailCodeRequest verifyMailCodeRequest)
+    {
+        String loginId = accountService.findUserId(verifyMailCodeRequest, MailPurpose.FIND_ID);
+        return ResponseEntity.ok(
+                ApiResponse.ok(loginId)
+        );
+    }
+    @Operation(
+            summary = "인증 메일 보내기",
+            description ="사용자에게 인증 매일을 보냅니다."
+    )
+    @PostMapping("/send")
+    public ResponseEntity<ApiResponse<String>> sendCode(
+            @RequestParam MailPurpose mailPurpose,
+            @RequestBody @Validated AuthDto.SendMailCodeRequest sendMailCodeRequest) {
+        accountService.sendMail(sendMailCodeRequest, mailPurpose);
+        return ResponseEntity.ok(
+                ApiResponse.ok("전송되었습니다.")
+        );
+    }
+
+
+
 
 
 }
