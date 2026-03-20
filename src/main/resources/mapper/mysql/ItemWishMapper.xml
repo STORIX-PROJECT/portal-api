@@ -4,28 +4,35 @@
 <mapper namespace="com.shop.storix.portalapi.mapper.item.ItemWishMapper">
 
     <insert id="addWish">
-        INSERT  INTO ITEM_WISHLIST (USER_LOGIN_NO, ITEM_NO, CREATED_DT)
-        VALUES  (#{userLoginNo}, #{itemNo} , #{createdDt})
+        INSERT  INTO ITEM_WISHLIST (
+                USER_LOGIN_NO
+             ,  ITEM_NO
+             ,  CREATED_DT
+        )
+        VALUES  (
+                #{userLoginNo}
+             ,  #{itemNo}
+             ,  #{createdDt} )
     </insert>
 
     <select id="existsWish" resultType="boolean">
-        SELECT COUNT(*) > 0
-        FROM  ITEM_WISHLIST
-        WHERE  USER_LOGIN_NO = #{userLoginNo}
-        AND  ITEM_NO = #{itemNo}
+        SELECT  COUNT(*) > 0
+          FROM  ITEM_WISHLIST iw
+         WHERE  iw.USER_LOGIN_NO = #{userLoginNo}
+           AND  iw.ITEM_NO = #{itemNo}
     </select>
 
-    <select id="findWish" resultType="com.shop.storix.portalapi.model.dto.item.response.wish.ItemWishResponseDto$ItemWishResponse">
-        SELECT  USER.USER_LOGIN_NO AS userLoginNo
-        ,  ITEM.ITEM_NO AS itemNo
-        ,  ITEM.ITEM_NAME AS itemName
-        ,  ITW.CREATED_DT AS createdDt
-        FROM  ITEM_WISHLIST ITW
-        JOIN  USER_LOGIN USER ON USER.USER_LOGIN_NO = ITW.USER_LOGIN_NO
-        JOIN  ITEM ITEM ON ITEM.ITEM_NO = ITW.ITEM_NO
-        WHERE  ITW.USER_LOGIN_NO = #{userLoginNo}
-        AND  ITEM.DELETED_DT IS NULL
-        ORDER BY ITW.CREATED_DT DESC
+    <select id="findWish" resultType="com.shop.storix.portalapi.model.dto.item.wish.ItemWishDto$ItemWishResponse">
+        SELECT  ul.USER_LOGIN_NO AS userLoginNo
+             ,  item.ITEM_NO AS itemNo
+             ,  item.ITEM_NAME AS itemName
+             ,  iw.CREATED_DT AS createdDt
+          FROM  ITEM_WISHLIST iw
+          JOIN  USER_LOGIN ul ON ul.USER_LOGIN_NO = iw.USER_LOGIN_NO
+          JOIN  ITEM item ON item.ITEM_NO = iw.ITEM_NO
+         WHERE  iw.USER_LOGIN_NO = #{userLoginNo}
+           AND  item.DELETED_DT IS NULL
+         ORDER BY iw.CREATED_DT DESC
     </select>
 
 </mapper>

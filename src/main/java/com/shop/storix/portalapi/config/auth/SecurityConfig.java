@@ -20,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
@@ -42,7 +41,8 @@ public class SecurityConfig {
             "/login","/default-ui.css",
             "/v3/**", "/api/v1/auth/**",
             "/oauth2/**", "/api/login/**",
-            "/api/v1/admin/**", "/swagger-ui/**"
+            "/api/v1/admin/**", "/swagger-ui/**",
+            "/api/v1/wish/**"
         };
     private final CustomOAuth2LoginService customOAuth2LoginService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
