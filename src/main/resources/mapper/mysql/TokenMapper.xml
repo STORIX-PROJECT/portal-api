@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.shop.storix.portalapi.mapper.auth.TokenMapper">
     <insert id="save" parameterType="com.shop.storix.portalapi.model.dto.auth.domain.AuthDto$Token">
-        INSERT INTO LOGIN_REFRESH_TOKEN (
+        INSERT INTO OMS.OGIN_REFRESH_TOKEN (
             USER_LOGIN_NO,
             REFRESH_TOKEN
         )
@@ -16,7 +16,7 @@
         SELECT
             USER_LOGIN_NO,
             REFRESH_TOKEN
-        FROM LOGIN_REFRESH_TOKEN
+        FROM OMS.LOGIN_REFRESH_TOKEN
         WHERE
             USER_LOGIN_NO = #{userLoginNo}
         ORDER BY CREATED_AT DESC

@@ -4,7 +4,7 @@
     <insert id="insertPurchaserProfile"
         parameterType="com.shop.storix.portalapi.model.dto.purchaser.domain.PurchaserDto$Purchaser"
     >
-    INSERT INTO PURCHASER_PROFILE (
+    INSERT INTO OMS.PURCHASER_PROFILE (
         purchaser_profile_no,
         user_login_no,
         nickname,
@@ -24,8 +24,9 @@
             pr.user_login_no,
             pr.nickname,
             pr.phone_number
-        FROM PURCHASER_PROFILE pr
+        FROM OMS.PURCHASER_PROFILE pr
         WHERE
             pr.user_login_no = #{userLoginNo}
     </select>
+
 </mapper>
