@@ -1,14 +1,14 @@
 package com.shop.storix.portalapi.mapper.item;
 
-import com.shop.storix.portalapi.model.dto.item.request.wish.ItemWishRequestDto;
-import com.shop.storix.portalapi.model.dto.item.response.wish.ItemWishResponseDto;
+import com.shop.storix.portalapi.model.dto.item.wish.ItemWishDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 @Mapper
 public interface ItemWishMapper {
-    boolean existsWish(ItemWishRequestDto.WishRequest request);
-    void addWish(ItemWishRequestDto.WishRequest request);
-    List<ItemWishResponseDto.ItemWishResponse> findWish(String userLoginNo);
+    boolean existsWish(ItemWishDto.ItemWishRequest request);
+    void addWish(ItemWishDto.ItemWishRequest request);
+    List<ItemWishDto.ItemWishResponse> findWish(@Param("userLoginNo") String userLoginNo);
 }
