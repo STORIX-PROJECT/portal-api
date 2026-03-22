@@ -42,7 +42,8 @@ public class RegisterServiceImpl implements RegisterService {
                 purchaserProfileNo,
                 userLoginNo,
                 dto.nickname(),
-                dto.phoneNumber());
+                dto.phoneNumber(),
+                dto.email());
 
         purchaserMapper.insertPurchaserProfile(purchaserDto);
     }

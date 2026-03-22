@@ -29,4 +29,9 @@ public class LoginCheckServiceImpl implements LoginCheckService {
         }
 
     }
+
+    @Override
+    public boolean checkUserProfile(String loginNo) {
+        return loginMapper.existsProfileByUserLoginNo(loginNo) > 0;
+    }
 }
