@@ -30,5 +30,7 @@ public interface LoginMapper {
     void resetFailCount(@Param("id") String loginId);
     void updateUserLoginStatus(@Param("id") String id,
                        @Param("status") AccountStatus status);
+    Optional<String> findLoginIdByEmail(@Param("email") String email);
+    int existsProfileByUserLoginNo(String userLoginNo);
 }
 

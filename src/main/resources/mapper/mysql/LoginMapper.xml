@@ -164,4 +164,19 @@
         WHERE pp.email = #{email}
     </select>
 
+    <select id="existsProfileByUserLoginNo"
+            parameterType="java.lang.String"
+            resultType="int">
+        SELECT EXISTS (
+            SELECT
+                1
+            FROM OMS.USER_LOGIN ul
+            LEFT JOIN OMS.PURCHASER_PROFILE pp
+            ON ul.user_login_no = pp.user_login_no
+            WHERE ul.user_login_no = #{userLoginNo}
+                AND pp.phone_number IS NOT NULL
+                AND pp.email IS NOT NULL
+            )
+    </select>
+
 </mapper>
