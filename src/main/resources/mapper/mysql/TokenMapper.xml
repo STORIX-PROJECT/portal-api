@@ -22,4 +22,12 @@
         ORDER BY CREATED_AT DESC
         LIMIT 1
     </select>
+
+    <delete id="delete">
+        DELETE
+        FROM LOGIN_REFRESH_TOKEN
+        WHERE
+            REFRESH_TOKEN = #{refreshToken}
+    </delete>
+
 </mapper>

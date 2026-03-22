@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface TokenMapper {
     void save(AuthDto.Token token);
     Optional<AuthDto.Token> findById (String userLoginNo);
+    void delete(String identifier);
 }

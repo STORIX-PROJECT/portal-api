@@ -69,6 +69,12 @@ public class AuthService {
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
     }
 
+    public void deleteRefreshToken (HttpServletRequest request){
+        String refreshToken = jwtProvider.resolveRefreshToken(request, REFRESH_COOKIE_NAME);
+
+
+    }
+
     private static UserPrincipal toPrincipal(AuthDto.AuthUser authUser) {
         return new UserPrincipal(authUser.login(), authUser.roles());
     }
