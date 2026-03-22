@@ -7,6 +7,7 @@ public class PurchaserDto {
             String purchaserProfileNo,
             String userLoginNo,
             String nickname,
-            String phoneNumber) {
+            String phoneNumber,
+            String email) {
     }
 }
