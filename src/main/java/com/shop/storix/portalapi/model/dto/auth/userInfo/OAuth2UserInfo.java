@@ -8,4 +8,6 @@ public abstract class OAuth2UserInfo {
     protected final Map<String,Object> attributes;
 
     public abstract String getOAuth2Id();
+
+    public abstract String getEmail();
 }

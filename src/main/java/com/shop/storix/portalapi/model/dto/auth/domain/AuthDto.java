@@ -45,7 +45,10 @@ public class AuthDto {
             String nickname,
 
             @Schema(description = "휴대폰 번호", example = "01012345678")
-            String phoneNumber) {
+            String phoneNumber,
+
+            @Schema(description = "사용자 email", example = "ddd@naver.com")
+            String email) {
     }
 
     @Alias("Role")

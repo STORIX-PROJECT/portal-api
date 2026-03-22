@@ -8,13 +8,15 @@
         purchaser_profile_no,
         user_login_no,
         nickname,
-        phone_number
+        phone_number,
+        email
     )
     VALUES (
         #{purchaserProfileNo},
         #{userLoginNo},
         #{nickname},
-        #{phoneNumber}
+        #{phoneNumber},
+        #{email}
     )
     </insert>
     <select id="selectPurchaserProfile"
