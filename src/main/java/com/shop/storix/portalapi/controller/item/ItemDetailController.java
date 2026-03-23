@@ -1,9 +1,9 @@
 package com.shop.storix.portalapi.controller.item;
 
 
-import com.shop.storix.portalapi.controller.admin.ApiResponse;
-import com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailDto;
-import com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailOptionDto;
+import com.shop.storix.portalapi.common.ApiResponse;
+import com.shop.storix.portalapi.model.dto.item.detail.ItemDetailDto;
+import com.shop.storix.portalapi.model.dto.item.option.ItemOptionDto;
 import com.shop.storix.portalapi.service.item.ItemDetailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +20,7 @@ import java.util.List;
 @Tag(name = "ItemDetail", description = "상품 상세정보 및 옵션 조회")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/detail")
+@RequestMapping("/api/v1/items")
 public class ItemDetailController {
     private final ItemDetailService itemDetailService;
 
@@ -31,20 +31,20 @@ public class ItemDetailController {
     @GetMapping("/{itemNo}")
     public ApiResponse<ItemDetailDto.ItemDetailWithImgResponse> itemDetail(@PathVariable Long itemNo) {
         log.info("ItemDetail search request - itemNo : {}",itemNo);
-        ItemDetailDto.ItemDetailWithImgResponse detail = itemDetailService.detailItem(itemNo);
+        ItemDetailDto.ItemDetailWithImgResponse response = itemDetailService.detailItem(itemNo);
 
         log.info("ItemDetail search response ready - itemNo : {}",itemNo);
-        return ApiResponse.ok(detail);
+        return ApiResponse.ok(response);
     }
 
     @Operation(
             summary = "상품 옵션정보 조회",
             description = "상품 번호를 통해 해당 상품의 옵션 정보를 조회합니다."
     )
-    @GetMapping("/{itemNo}/option")
-    public ApiResponse<List<ItemDetailOptionDto.OptionGroupResponse>> detailOption(@PathVariable Long itemNo) {
+    @GetMapping("/{itemNo}/options")
+    public ApiResponse<List<ItemOptionDto.OptionGroupResponse>> detailOption(@PathVariable Long itemNo) {
         log.info("Item Option serach request - itemNo : {}",itemNo);
-        List<ItemDetailOptionDto.OptionGroupResponse> result = itemDetailService.detailOption(itemNo);
+        List<ItemOptionDto.OptionGroupResponse> result = itemDetailService.detailOption(itemNo);
 
         log.info("Item Option search response ready - itemNo : {}, groupCount : {}",itemNo,result.size());
         return ApiResponse.ok(result);

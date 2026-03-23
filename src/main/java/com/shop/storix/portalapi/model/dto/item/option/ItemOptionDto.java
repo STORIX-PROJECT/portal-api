@@ -1,11 +1,13 @@
-package com.shop.storix.portalapi.model.dto.item.response.detail;
+package com.shop.storix.portalapi.model.dto.item.option;
 
-import lombok.NoArgsConstructor;
+import org.apache.ibatis.type.Alias;
+
 import java.util.List;
 
-@NoArgsConstructor
-public class ItemDetailOptionDto {
+public class ItemOptionDto {
 
+    // 내부용
+    @Alias("ItemDetailOptionResponse")
     public record ItemDetailOptionResponse (
             Long groupNo,
             String groupName,
@@ -14,12 +16,13 @@ public class ItemDetailOptionDto {
             Integer price
     ) {}
 
-    // 이거로 응답받아야함
+    // 이거로 응답
     public record OptionGroupResponse (
             Long groupNo,
             String groupName,
-            List<OptionResponse> options
+            List<ItemOptionDto.OptionResponse> options
     ) {}
+
 
     public record OptionResponse (
             Long optionNo,

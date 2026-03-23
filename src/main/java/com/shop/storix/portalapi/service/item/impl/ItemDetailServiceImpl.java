@@ -1,19 +1,18 @@
 package com.shop.storix.portalapi.service.item.impl;
 
 import com.shop.storix.portalapi.mapper.item.ItemDetailMapper;
-import com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailDto;
-import com.shop.storix.portalapi.model.dto.item.response.detail.ItemDetailOptionDto;
+import com.shop.storix.portalapi.model.dto.item.detail.ItemDetailDto;
+import com.shop.storix.portalapi.model.dto.item.option.ItemOptionDto;
 import com.shop.storix.portalapi.service.item.ItemDetailService;
+import com.shop.storix.portalapi.service.item.assembler.ItemDetailAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.AbstractMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
@@ -26,73 +25,37 @@ public class ItemDetailServiceImpl implements ItemDetailService {
     public ItemDetailDto.ItemDetailWithImgResponse detailItem(Long itemNo) {
         log.info("ItemDetail search started - itemNo : {}",itemNo);
 
-        try {
-            ItemDetailDto.ItemDetailResponse detail = itemDetailMapper.detailItem(itemNo);
-            if(detail == null || detail.deletedDt() != null || !"ACTIVE".equals(detail.itemStatus())) {
-                log.warn("ItemDetail search validation failed - itemNo : {}",itemNo);
-                throw new IllegalArgumentException("존재하지 않거나 판매가 중단된 상품입니다.");
-            }
-            List<String> imgUrls = itemDetailMapper.imgUrls(itemNo);
-            log.info("ItemDetail completed - itemNo : {}",itemNo);
+        // 내부용 DTO로 받기
+        ItemDetailDto.ItemDetailResponse detail = itemDetailMapper.detailItem(itemNo);
 
-            return new ItemDetailDto.ItemDetailWithImgResponse(
-                    detail.itemNo(),
-                    detail.itemName(),
-                    detail.price(),
-                    imgUrls,
-                    detail.mfd(),
-                    detail.exp(),
-                    detail.itemDescription(),
-                    detail.itemWeight(),
-                    detail.itemWidth(),
-                    detail.itemLength(),
-                    detail.itemHeight(),
-                    detail.itemRemark()
-            );
-        } catch (IllegalArgumentException e) {
-            log.warn("ItemDetail failed - {}",e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            log.warn("ItemDetail error",e);
-            throw e;
+        if(detail == null || detail.deletedDt() != null || !"ACTIVE".equals(detail.itemStatus())) {
+            log.warn("ItemDetail search validation failed - itemNo : {}",itemNo);
+            throw new IllegalArgumentException("존재하지 않거나 판매가 중단된 상품입니다.");
         }
 
+        List<String> imgUrls = itemDetailMapper.imgUrls(itemNo);
+        log.info("ItemDetail completed - itemNo : {}",itemNo);
 
+        // 외부용 DTO로 변환
+        return ItemDetailAssembler.toDetailGroup(detail,imgUrls);
     }
 
     @Override
-    public List<ItemDetailOptionDto.OptionGroupResponse> detailOption(Long itemNo) {
+    public List<ItemOptionDto.OptionGroupResponse> detailOption(Long itemNo) {
         log.info("Item Option detail started - itemNo: {}", itemNo);
-        try {
-            List<ItemDetailOptionDto.ItemDetailOptionResponse> optionList = itemDetailMapper.optionDetail(itemNo);
 
-            if (CollectionUtils.isEmpty(optionList)) {
-                log.warn("Item Option detail not found - itemNo : {}", itemNo);
-                throw new IllegalArgumentException("옵션이 존재하지 않습니다.");
-            }
-            List<ItemDetailOptionDto.OptionGroupResponse> result = optionList.stream()
-                    .collect(Collectors.groupingBy(
-                            flat -> new AbstractMap.SimpleEntry<>(flat.groupNo(), flat.groupName()),
-                            LinkedHashMap::new,
-                            Collectors.mapping(
-                                    flat -> new ItemDetailOptionDto.OptionResponse(flat.optionNo(), flat.optionName(), flat.price()),
-                                    Collectors.toList()
-                            )
-                    ))
-                    .entrySet().stream()
-                    .map(e -> new ItemDetailOptionDto.OptionGroupResponse(e.getKey().getKey(), e.getKey().getValue(), e.getValue()))
-                    .toList();
+        // 내부용 DTO로 받기
+        List<ItemOptionDto.ItemDetailOptionResponse> optionList = itemDetailMapper.optionDetail(itemNo);
 
-            log.info("Item option detail completed - itemNo: {}, groupCount: {}", itemNo, result.size());
-            return result;
-
-        } catch (IllegalArgumentException e) {
-            log.warn("Item option detail failed - {}", e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            log.error("Item option detail error", e);
-            throw e;
+        if (CollectionUtils.isEmpty(optionList)) {
+            log.warn("Item Option detail not found - itemNo : {}", itemNo);
+            throw new IllegalArgumentException("옵션이 존재하지 않습니다.");
         }
-    }
 
+        // 조합
+        List<ItemOptionDto.OptionGroupResponse> result = ItemDetailAssembler.toGroup(optionList);
+
+        log.info("Item option detail completed - itemNo: {}, groupCount: {}", itemNo, result.size());
+        return result;
+    }
 }

@@ -1,52 +1,32 @@
-package com.shop.storix.portalapi.model.dto.item.response.detail;
+package com.shop.storix.portalapi.model.dto.item.detail;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.NoArgsConstructor;
+import org.apache.ibatis.type.Alias;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@NoArgsConstructor
 public class ItemDetailDto {
+
+    // 내부용
+    @Alias("ItemDetailResponse")
     public record ItemDetailResponse (
-            @Schema(description = "상품 고유 번호",example = "1")
             Long itemNo,
-
-            @Schema(description = "상품명",example = "나이키 에어맥스")
             String itemName,
-
-            @Schema(description = "상품 가격",example = "150000")
             Integer price,
-
-            @Schema(description = "제조일자 (YYYYMMDD)",example = "20260101")
             String mfd,
-
-            @Schema(description = "유통기한 (YYYYMMDD)",example = "20270101")
             String exp,
-
-            @Schema(description = "상품 설명",example = "나이키 신발 입니다.")
             String itemDescription,
-
-            @Schema(description = "상품 무게",example = "10.12")
             BigDecimal itemWeight,
-
-            @Schema(description = "상품 가로 길이",example = "120.94")
             BigDecimal itemWidth,
-
-            @Schema(description = "상품 세로 길이",example = "200.12")
             BigDecimal itemLength,
-
-            @Schema(description = "상품 높이",example = "15.00")
             BigDecimal itemHeight,
-
-            @Schema(description = "상품 비고",example = "파손주의")
             String itemRemark,
-
             String deletedDt,
-
             String itemStatus
     ) {}
 
+        // 외부 DTO
     public record ItemDetailWithImgResponse(
             @Schema(description = "상품 고유 번호",example = "1")
             Long itemNo,
@@ -86,3 +66,4 @@ public class ItemDetailDto {
 
     ) {}
 }
+
