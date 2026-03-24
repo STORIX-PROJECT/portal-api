@@ -20,6 +20,7 @@ public enum ErrorCode implements CodeEnum {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COM:003", "서버 내부 오류가 발생했습니다."),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COM:004", "지원하지 않는 HTTP 메서드입니다."),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "COM:005", "요청한 리소스를 찾을 수 없습니다."),
+    UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "COM:006", "지원하지 않는 Content-Type입니다."),
 
     // ========== LOG: 로그인  ==========
     LOGIN_NOT_FOUND(HttpStatus.NOT_FOUND, "LOG:001", "해당 로그인 계정을 찾을 수 없습니다."),

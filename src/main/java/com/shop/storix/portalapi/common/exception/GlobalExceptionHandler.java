@@ -5,11 +5,13 @@ import com.shop.storix.portalapi.common.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * 전역 예외 처리 핸들러
@@ -29,8 +31,7 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.fail(
                         errorCode.getCode(),
                         errorCode.getDescription()
-                        )
-                );
+                ));
     }
 
     // @Valid 검증 실패 처리 핸들러
@@ -48,8 +49,7 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.fail(
                         ErrorCode.INVALID_INPUT.getCode(),
                         message
-                        )
-                );
+                ));
     }
 
     // 필수 요청 파라미터 누락 처리 핸들러
@@ -64,25 +64,23 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.fail(
                         ErrorCode.MISSING_PARAMETER.getCode(),
                         message
-                        )
-                );
+                ));
     }
 
     // 잘못된 JSON 형식 처리 핸들러
     @ExceptionHandler(HttpMessageNotReadableException.class)
     protected ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
-        log.error("HttpMessageNotReadableException: {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+        log.error("Message Not Readable : {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 
         return ResponseEntity
                 .status(ErrorCode.INVALID_INPUT.getHttpStatus())
                 .body(ApiResponse.fail(
                         ErrorCode.INVALID_INPUT.getCode(),
                         ErrorCode.INVALID_INPUT.getDescription()
-                        )
-                );
+                ));
     }
 
-    // 지원하지 않는 HTTP 메서드 처리
+    // 지원하지 않는 HTTP 메서드 처리 핸들러
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ApiResponse<Void>> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e) {
         log.error("Method not supported: {}", e.getMethod());
@@ -92,8 +90,32 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.fail(
                         ErrorCode.METHOD_NOT_ALLOWED.getCode(),
                         ErrorCode.METHOD_NOT_ALLOWED.getDescription()
-                        )
-                );
+                ));
+    }
+
+    // 존재하지 않는 URL 요청 처리 핸들러
+    @ExceptionHandler(NoResourceFoundException.class)
+    protected ResponseEntity<ApiResponse<Void>> handleNoResourceFound(NoResourceFoundException e) {
+        log.error("No Resource Found: {}", e.getMessage());
+
+        return ResponseEntity
+                .status(ErrorCode.RESOURCE_NOT_FOUND.getHttpStatus())
+                .body(ApiResponse.fail(
+                        ErrorCode.RESOURCE_NOT_FOUND.getCode(),
+                        ErrorCode.RESOURCE_NOT_FOUND.getDescription()
+                ));
+    }
+
+    // 지원하지 않는 Content-Type 요청
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    protected ResponseEntity<ApiResponse<Void>> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException e) {
+        log.error("Media Type NotSupported : {}", e.getMessage());
+        return ResponseEntity
+                .status(ErrorCode.UNSUPPORTED_MEDIA_TYPE.getHttpStatus())
+                .body(ApiResponse.fail(
+                        ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode(),
+                        ErrorCode.UNSUPPORTED_MEDIA_TYPE.getDescription()
+                ));
     }
 
     /**
