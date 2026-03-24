@@ -1,6 +1,7 @@
 package com.shop.storix.portalapi.model.dto.item.option;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.ibatis.type.Alias;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ItemOptionDto {
     ) {}
 
 
-    // 최종 출력은 이 부분
+    // 최종 출력부분
     @Schema(description = "옵션 검증 응답")
     public record OptionValidResponse(
             @Schema(description = "옵션 상세 정보 목록")
@@ -24,7 +25,8 @@ public class ItemOptionDto {
     ) {}
 
 
-    // 옵션 정보 출력
+    //내부용 DTO
+    @Alias("OptionDetail")
     @Schema(description = "옵션 상세 정보")
     public record OptionDetail(
             @Schema(description = "옵션 고유 ID",example = "1")
@@ -33,11 +35,10 @@ public class ItemOptionDto {
             @Schema(description = "옵션 그룹 고유 ID",example = "1")
             Long groupNo,
 
-            @Schema(description = "옵션 그룹명",example = "색상")
-            String groupName,
-
             @Schema(description = "옵션명",example = "빨강")
             String optionName
 
     ) {}
+
 }
+

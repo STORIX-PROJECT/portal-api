@@ -6,9 +6,7 @@ import com.shop.storix.portalapi.service.item.ItemOptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,22 +19,28 @@ public class ItemOptionServiceImpl implements ItemOptionService {
 
     @Override
     public ItemOptionDto.OptionValidResponse validateCombination(ItemOptionDto.ItemOptionRequest request) {
-
-        if (request.itemNo() == null || CollectionUtils.isEmpty(request.optionNos())) {
-            log.error("request blank - itemNo : {}, optionNos : {}",request.itemNo(), request.optionNos());
-            throw new IllegalArgumentException("유효하지 않은 요청입니다.");
-        }
-
-        // 유효 옵션 조회
-        // O(1) 조회로 빠름
-        Set<Long> validOptions = new HashSet<>(itemOptionMapper.getValidOptions(request.itemNo()));
-
-        if (validOptions.isEmpty() || !validOptions.containsAll(request.optionNos())) {
-            throw new IllegalArgumentException("없는 옵션 입니다.");
-        }
-
-        // 옵션 상세정보 조회 및 변환
         List<ItemOptionDto.OptionDetail> options = itemOptionMapper.getOptionDetails(request.optionNos());
+
+        if (options.size() != request.optionNos().size()) {
+            log.error("Invalid option numbers found");
+            throw new IllegalArgumentException("유효하지 않은 옵션 번호가 포함되어 있습니다.");
+        }
+
+        Set<Long> groups = options.stream()
+                .map(ItemOptionDto.OptionDetail::groupNo)
+                .collect(Collectors.toSet());
+
+        int totalGroups = itemOptionMapper.countOptionGroups(request.itemNo());
+
+        if (groups.size() != options.size()) {
+            log.warn("Duplicate group selection");
+            throw new IllegalArgumentException("동일한 옵션 그룹의 항목을 중복해서 선택할 수 없습니다.");
+        }
+
+        if (groups.size() != totalGroups) {
+            log.warn("Incomplete option selection");
+            throw new IllegalArgumentException("모든 필수 옵션을 선택해야 합니다.");
+        }
 
         return new ItemOptionDto.OptionValidResponse(options);
     }
