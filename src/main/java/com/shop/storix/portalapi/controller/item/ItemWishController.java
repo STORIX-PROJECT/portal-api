@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 
 @Slf4j
 @Tag(name = "ItemWish", description = "상품 위시리스트")
@@ -29,5 +29,30 @@ public class ItemWishController {
         log.info("Delete Wish request - itemNo : {}, userLoginNo : {}",request.itemNo(), request.userLoginNo());
         itemWishService.deleteWish(request);
         return ApiResponse.ok("위시 해제 완료");
+            summary = "상품 위시리스트 추가",
+            description = "사용자번호, 상품번호를 통해 상품의 위시리스트 추가합니다."
+    )
+    @PostMapping("/add")
+    public ApiResponse<?> addWish(@Valid @RequestBody ItemWishDto.ItemWishRequest request) {
+        log.info("ItemWish add request - itemNo : {}, userLoginNo : {}",request.itemNo(), request.userLoginNo());
+
+        itemWishService.addWishList(request);
+        return ApiResponse.ok(request);
+    }
+
+
+    @Operation(
+            summary = "상품 위시리스트 조회",
+            description = "내가 추가한 위시리스트 조회"
+    )
+    @GetMapping("/find/{userLoginNo}")
+    public ApiResponse<List<ItemWishDto.ItemWishResponse>> findWish(
+            @PathVariable String userLoginNo
+    ) {
+        log.info("Find ItemWish request - userLoginNo : {}",userLoginNo);
+        List<ItemWishDto.ItemWishResponse> wishList = itemWishService.findWishList(userLoginNo);
+
+        log.info("Find WishList response ready - wishCount : {}",wishList.size());
+        return ApiResponse.ok(wishList);
     }
 }
