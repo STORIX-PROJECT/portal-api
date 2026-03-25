@@ -35,6 +35,7 @@ public class ItemWishServiceImpl implements ItemWishService {
 
     }
 
+    @Override
     public void addWishList(ItemWishDto.ItemWishRequest request) {
         log.info("Add Wish started - itemNo : {}, userLoginNo : {}",request.itemNo(), request.userLoginNo());
 

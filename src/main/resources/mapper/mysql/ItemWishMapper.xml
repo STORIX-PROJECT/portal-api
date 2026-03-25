@@ -14,6 +14,7 @@
           FROM  OMS.ITEM_WISHLIST
          WHERE  USER_LOGIN_NO = #{userLoginNo}
            AND  ITEM_NO = #{itemNo}
+    </select>
       
     <insert id="addWish">
         INSERT  INTO OMS.ITEM_WISHLIST (
@@ -27,13 +28,6 @@
              ,  #{createdDt}
         )
     </insert>
-
-    <select id="existsWish" resultType="boolean">
-        SELECT  COUNT(*) > 0
-          FROM  OMS.ITEM_WISHLIST iw
-         WHERE  iw.USER_LOGIN_NO = #{userLoginNo}
-           AND  iw.ITEM_NO = #{itemNo}
-    </select>
 
     <select id="findWish" resultType="ItemWishResponse">
         SELECT  ul.USER_LOGIN_NO AS userLoginNo
