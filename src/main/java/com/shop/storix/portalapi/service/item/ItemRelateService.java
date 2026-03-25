@@ -6,5 +6,5 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface ItemRelateService {
-    List<RelateItemDto.RelateDto> relateItem(@Param("itemNo") Long itemNo);
+    List<RelateItemDto.RelateItemResponse> relateItem(@Param("itemNo") Long itemNo);
 }

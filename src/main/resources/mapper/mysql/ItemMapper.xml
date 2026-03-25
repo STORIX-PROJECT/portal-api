@@ -3,30 +3,41 @@
 
 <mapper namespace="com.shop.storix.portalapi.mapper.item.ItemMapper">
 
-    <select id="relateItem" resultType="com.shop.storix.portalapi.model.dto.item.relate.RelateItemDto$RelateDto">
-        SELECT  ITEM.ITEM_NO AS itemNo
-             ,  ITEM.ITEM_NAME AS itemName
-             ,  MIN(ITOP.PRICE) AS price
-             ,  ITEM.ITEM_STATUS AS itemStatus
-             ,  IMG.IMG_URL AS imgUrl
-             ,  COUNT(DISTINCT ORD.ORDER_NO) AS orderCount
-          FROM  ITEM ITEM
-          JOIN  ITEM_CATEGORY_MAPPING ITCP ON ITCP.ITEM_NO = ITEM.ITEM_NO
-          LEFT  JOIN ITEM_OPTION_GROUP ITOG ON ITOG.ITEM_NO = ITEM.ITEM_NO
-          LEFT  JOIN ITEM_OPTION ITOP ON ITOP.GROUP_NO = ITOG.GROUP_NO
-          LEFT  JOIN ITEM_IMAGES IMG ON IMG.ITEM_NO = ITEM.ITEM_NO
-           AND  IMG.PRIMARY_YN = 'Y'
-          LEFT  JOIN ORDER_DETAIL ORD ON ORD.ITEM_NO = ITEM.ITEM_NO
-         WHERE  ITCP.CATEGORY_NO IN (
-                 SELECT  CATEGORY_NO
-                   FROM  ITEM_CATEGORY_MAPPING
-                  WHERE  ITEM_NO = #{itemNo}
-        )
-           AND  ITEM.ITEM_NO != #{itemNo}
-           AND  ITEM.ITEM_STATUS = 'ACTIVE'
-           AND  ITEM.DELETED_DT IS NULL
-         GROUP  BY ITEM.ITEM_NO, ITEM.ITEM_NAME, IMG.IMG_URL
+    <select id="relateItem" resultType="RelateDto">
+        SELECT  item.ITEM_NO AS itemNo
+             ,  item.ITEM_NAME AS itemName
+             ,  MAX(io.PRICE) AS price
+             ,  item.ITEM_STATUS AS itemStatus
+             ,  img.IMG_URL AS imgUrl
+             ,  COUNT(DISTINCT od.ORDER_NO) AS orderCount
+          FROM  OMS.ITEM item
+
+          JOIN  OMS.ITEM_CATEGORY_MAPPING icm ON icm.ITEM_NO = item.ITEM_NO
+
+          LEFT  JOIN OMS.ITEM_OPTION_GROUP iog ON iog.ITEM_NO = item.ITEM_NO
+
+          LEFT  JOIN OMS.ITEM_OPTION io ON io.GROUP_NO = iog.GROUP_NO
+
+          LEFT  JOIN OMS.ITEM_IMAGES img ON img.ITEM_NO = item.ITEM_NO
+           AND  img.PRIMARY_YN = 'Y'
+
+          LEFT  JOIN OMS.ORDER_DETAIL od ON od.ITEM_NO = item.ITEM_NO
+
+         WHERE  icm.CATEGORY_NO IN (
+                SELECT  CATEGORY_NO
+                  FROM  OMS.ITEM_CATEGORY_MAPPING
+                 WHERE  ITEM_NO = #{itemNo}
+                 )
+           AND  item.ITEM_NO != #{itemNo}
+           AND  item.ITEM_STATUS = 'ACTIVE'
+           AND  item.DELETED_DT IS NULL
+
+         GROUP  BY item.ITEM_NO
+             ,  item.ITEM_NAME
+             ,  img.IMG_URL
+
          ORDER  BY orderCount DESC
-         LIMIT  10
+         LIMIT  5
     </select>
+
 </mapper>
