@@ -11,7 +11,6 @@ public class ItemRelateAssembler {
                 .map(relate -> RelateItemDto.RelateItemResponse.builder()
                         .itemNo(relate.itemNo())
                         .itemName(relate.itemName())
-                        .itemStatus(relate.itemStatus())
                         .price(relate.price())
                         .imgUrl(relate.imgUrl())
                         .orderCount(relate.orderCount())

@@ -14,6 +14,7 @@
     <typeAliases>
         <typeAlias alias="ItemWishRequest" type="com.shop.storix.portalapi.model.dto.item.wish.ItemWishDto$ItemWishRequest"/>
         <typeAlias alias="ItemWishResponse" type="com.shop.storix.portalapi.model.dto.item.wish.ItemWishDto$ItemWishResponse"/>
+        <typeAlias alias="RelateDto" type="com.shop.storix.portalapi.model.dto.item.relate.RelateItemDto$RelateDto"/>
     </typeAliases>
 
     <typeHandlers>

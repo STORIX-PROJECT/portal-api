@@ -10,17 +10,15 @@ public class RelateItemDto {
             Long itemNo,
             String itemName,
             Integer price,
-            String itemStatus,
             String imgUrl,
             Integer orderCount
     ) {}
 
-    // Controller Reponse 용답용
+    // ControllerResponse 용답용
     @Builder
     public record RelateItemResponse (
             Long itemNo,
             String itemName,
-            String itemStatus,
             Integer price,
             String imgUrl,
             Integer orderCount
