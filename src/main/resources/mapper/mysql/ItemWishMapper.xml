@@ -4,14 +4,14 @@
 <mapper namespace="com.shop.storix.portalapi.mapper.item.ItemWishMapper">
 
     <delete id="deleteWish">
-        DELETE  FROM ITEM_WISHLIST
+        DELETE  FROM OMS.ITEM_WISHLIST
          WHERE  USER_LOGIN_NO = #{userLoginNo}
            AND  ITEM_NO = #{itemNo}
     </delete>
 
     <select id="existsWish" resultType="boolean">
         SELECT  COUNT(*) > 0
-          FROM  ITEM_WISHLIST
+          FROM  OMS.ITEM_WISHLIST
          WHERE  USER_LOGIN_NO = #{userLoginNo}
            AND  ITEM_NO = #{itemNo}
     </select>

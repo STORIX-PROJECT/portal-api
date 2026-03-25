@@ -25,9 +25,9 @@ public class ItemWishController {
             description = "사용자번호, 상품번호를 통해 해당 상품의 위시를 삭제합니다."
     )
     @DeleteMapping("/delete")
-    public ApiResponse<?> deleteWish(@Valid @RequestBody ItemWishDto.DeleteWishRequest request) {
+    public ApiResponse<String> deleteWish(@Valid @RequestBody ItemWishDto.DeleteWishRequest request) {
         log.info("Delete Wish request - itemNo : {}, userLoginNo : {}",request.itemNo(), request.userLoginNo());
         itemWishService.deleteWish(request);
-        return ApiResponse.ok();
+        return ApiResponse.ok("위시 해제 완료");
     }
 }

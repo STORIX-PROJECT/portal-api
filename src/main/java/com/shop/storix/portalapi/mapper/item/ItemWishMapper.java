@@ -6,5 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ItemWishMapper {
     boolean existsWish(ItemWishDto.DeleteWishRequest request);
-    void deleteWish(ItemWishDto.DeleteWishRequest request);
+    int deleteWish(ItemWishDto.DeleteWishRequest request);
 }

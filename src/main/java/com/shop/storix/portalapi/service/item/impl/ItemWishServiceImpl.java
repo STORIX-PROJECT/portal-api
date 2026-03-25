@@ -24,7 +24,12 @@ public class ItemWishServiceImpl implements ItemWishService {
                 throw new IllegalArgumentException("위시가 존재하지 않습니다.");
             }
 
-            itemWishMapper.deleteWish(request);
+            int deleteCount = itemWishMapper.deleteWish(request);
+
+            if (deleteCount == 0) {
+                log.error("Delete Fail - itemNo : {}",request.itemNo());
+                throw new IllegalArgumentException("위시 삭제에 실패했습니다.");
+            }
             log.info("Delete Wish Completed - itemNo : {}, userLoginNo : {}", request.itemNo(), request.userLoginNo());
 
     }
