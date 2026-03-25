@@ -1,12 +1,18 @@
 package com.shop.storix.portalapi.model.dto.item.wish;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.apache.ibatis.type.Alias;
 
-
 public class ItemWishDto {
+    public record DeleteWishRequest (
+            @NotBlank
+            String userLoginNo,
+            @NotNull
+            Long itemNo
 
     @Alias("ItemWishRequest")
     public record ItemWishRequest (

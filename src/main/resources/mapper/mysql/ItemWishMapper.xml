@@ -3,6 +3,18 @@
 
 <mapper namespace="com.shop.storix.portalapi.mapper.item.ItemWishMapper">
 
+    <delete id="deleteWish">
+        DELETE  FROM OMS.ITEM_WISHLIST
+         WHERE  USER_LOGIN_NO = #{userLoginNo}
+           AND  ITEM_NO = #{itemNo}
+    </delete>
+
+    <select id="existsWish" resultType="boolean">
+        SELECT  COUNT(*) > 0
+          FROM  OMS.ITEM_WISHLIST
+         WHERE  USER_LOGIN_NO = #{userLoginNo}
+           AND  ITEM_NO = #{itemNo}
+      
     <insert id="addWish">
         INSERT  INTO OMS.ITEM_WISHLIST (
                 USER_LOGIN_NO

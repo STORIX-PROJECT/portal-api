@@ -1,5 +1,6 @@
 package com.shop.storix.portalapi.controller.item;
 
+
 import com.shop.storix.portalapi.common.ApiResponse;
 import com.shop.storix.portalapi.model.dto.item.wish.ItemWishDto;
 import com.shop.storix.portalapi.service.item.ItemWishService;
@@ -9,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Slf4j
@@ -21,6 +21,14 @@ public class ItemWishController {
     private final ItemWishService itemWishService;
 
     @Operation(
+            summary = "상품 위시리스트 삭제",
+            description = "사용자번호, 상품번호를 통해 해당 상품의 위시를 삭제합니다."
+    )
+    @DeleteMapping("/delete")
+    public ApiResponse<String> deleteWish(@Valid @RequestBody ItemWishDto.DeleteWishRequest request) {
+        log.info("Delete Wish request - itemNo : {}, userLoginNo : {}",request.itemNo(), request.userLoginNo());
+        itemWishService.deleteWish(request);
+        return ApiResponse.ok("위시 해제 완료");
             summary = "상품 위시리스트 추가",
             description = "사용자번호, 상품번호를 통해 상품의 위시리스트 추가합니다."
     )
