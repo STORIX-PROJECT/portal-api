@@ -26,9 +26,13 @@ public class ItemWishController {
     )
     @DeleteMapping("/delete")
     public ApiResponse<String> deleteWish(@Valid @RequestBody ItemWishDto.DeleteWishRequest request) {
-        log.info("Delete Wish request - itemNo : {}, userLoginNo : {}",request.itemNo(), request.userLoginNo());
+        log.info("Delete Wish request - itemNo : {}, userLoginNo : {}", request.itemNo(), request.userLoginNo());
         itemWishService.deleteWish(request);
         return ApiResponse.ok("위시 해제 완료");
+
+    }
+
+    @Operation(
             summary = "상품 위시리스트 추가",
             description = "사용자번호, 상품번호를 통해 상품의 위시리스트 추가합니다."
     )

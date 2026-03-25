@@ -9,9 +9,6 @@ import java.util.List;
 public interface ItemWishMapper {
     boolean existsWish(ItemWishDto.DeleteWishRequest request);
     int deleteWish(ItemWishDto.DeleteWishRequest request);
-
-@Mapper
-public interface ItemWishMapper {
     boolean existsWish(ItemWishDto.ItemWishRequest request);
     void addWish(ItemWishDto.ItemWishRequest request);
     List<ItemWishDto.ItemWishResponse> findWish(@Param("userLoginNo") String userLoginNo);
