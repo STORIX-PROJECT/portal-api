@@ -29,7 +29,7 @@ public class ItemWishController {
         log.info("ItemWish add request - itemNo : {}, userLoginNo : {}",request.itemNo(), request.userLoginNo());
 
         itemWishService.addWishList(request);
-        return ApiResponse.ok();
+        return ApiResponse.ok(request);
     }
 
 

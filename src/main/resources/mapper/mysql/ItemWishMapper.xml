@@ -4,7 +4,7 @@
 <mapper namespace="com.shop.storix.portalapi.mapper.item.ItemWishMapper">
 
     <insert id="addWish">
-        INSERT  INTO ITEM_WISHLIST (
+        INSERT  INTO OMS.ITEM_WISHLIST (
                 USER_LOGIN_NO
              ,  ITEM_NO
              ,  CREATED_DT
@@ -12,24 +12,25 @@
         VALUES  (
                 #{userLoginNo}
              ,  #{itemNo}
-             ,  #{createdDt} )
+             ,  #{createdDt}
+        )
     </insert>
 
     <select id="existsWish" resultType="boolean">
         SELECT  COUNT(*) > 0
-          FROM  ITEM_WISHLIST iw
+          FROM  OMS.ITEM_WISHLIST iw
          WHERE  iw.USER_LOGIN_NO = #{userLoginNo}
            AND  iw.ITEM_NO = #{itemNo}
     </select>
 
-    <select id="findWish" resultType="com.shop.storix.portalapi.model.dto.item.wish.ItemWishDto$ItemWishResponse">
+    <select id="findWish" resultType="ItemWishResponse">
         SELECT  ul.USER_LOGIN_NO AS userLoginNo
              ,  item.ITEM_NO AS itemNo
              ,  item.ITEM_NAME AS itemName
              ,  iw.CREATED_DT AS createdDt
-          FROM  ITEM_WISHLIST iw
-          JOIN  USER_LOGIN ul ON ul.USER_LOGIN_NO = iw.USER_LOGIN_NO
-          JOIN  ITEM item ON item.ITEM_NO = iw.ITEM_NO
+          FROM  OMS.ITEM_WISHLIST iw
+          JOIN  OMS.USER_LOGIN ul ON ul.USER_LOGIN_NO = iw.USER_LOGIN_NO
+          JOIN  OMS.ITEM item ON item.ITEM_NO = iw.ITEM_NO
          WHERE  iw.USER_LOGIN_NO = #{userLoginNo}
            AND  item.DELETED_DT IS NULL
          ORDER BY iw.CREATED_DT DESC
