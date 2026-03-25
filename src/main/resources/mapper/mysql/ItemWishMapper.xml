@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shop.storix.portalapi.mapper.item.ItemWishMapper">
+
+    <insert id="addWish">
+        INSERT  INTO OMS.ITEM_WISHLIST (
+                USER_LOGIN_NO
+             ,  ITEM_NO
+             ,  CREATED_DT
+        )
+        VALUES  (
+                #{userLoginNo}
+             ,  #{itemNo}
+             ,  #{createdDt}
+        )
+    </insert>
+
+    <select id="existsWish" resultType="boolean">
+        SELECT  COUNT(*) > 0
+          FROM  OMS.ITEM_WISHLIST iw
+         WHERE  iw.USER_LOGIN_NO = #{userLoginNo}
+           AND  iw.ITEM_NO = #{itemNo}
+    </select>
+
+    <select id="findWish" resultType="ItemWishResponse">
+        SELECT  ul.USER_LOGIN_NO AS userLoginNo
+             ,  item.ITEM_NO AS itemNo
+             ,  item.ITEM_NAME AS itemName
+             ,  iw.CREATED_DT AS createdDt
+          FROM  OMS.ITEM_WISHLIST iw
+          JOIN  OMS.USER_LOGIN ul ON ul.USER_LOGIN_NO = iw.USER_LOGIN_NO
+          JOIN  OMS.ITEM item ON item.ITEM_NO = iw.ITEM_NO
+         WHERE  iw.USER_LOGIN_NO = #{userLoginNo}
+           AND  item.DELETED_DT IS NULL
+         ORDER BY iw.CREATED_DT DESC
+    </select>
+
+</mapper>
