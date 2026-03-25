@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 /**
  * 전역 예외 처리 핸들러
  * {@link StorixException} 커스텀 에러처리는 해당 클래스 참조 바람.
@@ -24,8 +27,15 @@ public class GlobalExceptionHandler {
     // StorixException 처리
     @ExceptionHandler(StorixException.class)
     protected ResponseEntity<ApiResponse<Void>> handleStorixException(StorixException e) {
-        log.error("StorixException: code={}, message={}", e.getErrorCode().getCode(), e.getMessage());
         ErrorCode errorCode = e.getErrorCode();
+        String message = e.getMessage();
+
+        if (errorCode.getHttpStatus().is5xxServerError()) {
+            log.error("StorixException: code={}, message={}", errorCode.getCode(), message);
+        } else {
+            /* if errorCode.getHttpStatus().is4xxClientError() */
+            log.warn("StorixException: code={}, message={}", errorCode.getCode(), message);
+        }
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
                 .body(ApiResponse.fail(
@@ -37,12 +47,14 @@ public class GlobalExceptionHandler {
     // @Valid 검증 실패 처리 핸들러
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
-        log.error("Validation failed: {}", e.getMessage());
-
-        String message = e.getBindingResult().getFieldErrors().stream()
-                .findFirst()
+        String message = Optional.of(e.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining(", "))
+                )
+                .filter(msg -> !msg.isBlank())
                 .orElse(ErrorCode.INVALID_INPUT.getDescription());
+
+        log.warn("Validation failed: {}", message);
 
         return ResponseEntity
                 .status(ErrorCode.INVALID_INPUT.getHttpStatus())
@@ -55,7 +67,7 @@ public class GlobalExceptionHandler {
     // 필수 요청 파라미터 누락 처리 핸들러
     @ExceptionHandler(MissingServletRequestParameterException.class)
     protected ResponseEntity<ApiResponse<Void>> handleMissingServletRequestParameter(MissingServletRequestParameterException e) {
-        log.error("Missing parameter: {}", e.getParameterName());
+        log.warn("Missing parameter: {}", e.getParameterName());
 
         String message = "필수 파라미터 '" + e.getParameterName() + "'이(가) 누락되었습니다.";
 
@@ -70,7 +82,7 @@ public class GlobalExceptionHandler {
     // 잘못된 JSON 형식 처리 핸들러
     @ExceptionHandler(HttpMessageNotReadableException.class)
     protected ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
-        log.error("Message Not Readable : {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+        log.warn("Message Not Readable : {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 
         return ResponseEntity
                 .status(ErrorCode.INVALID_INPUT.getHttpStatus())
@@ -83,7 +95,7 @@ public class GlobalExceptionHandler {
     // 지원하지 않는 HTTP 메서드 처리 핸들러
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ApiResponse<Void>> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e) {
-        log.error("Method not supported: {}", e.getMethod());
+        log.warn("Method not supported: {}", e.getMethod());
 
         return ResponseEntity
                 .status(ErrorCode.METHOD_NOT_ALLOWED.getHttpStatus())
@@ -96,7 +108,7 @@ public class GlobalExceptionHandler {
     // 존재하지 않는 URL 요청 처리 핸들러
     @ExceptionHandler(NoResourceFoundException.class)
     protected ResponseEntity<ApiResponse<Void>> handleNoResourceFound(NoResourceFoundException e) {
-        log.error("No Resource Found: {}", e.getMessage());
+        log.warn("No Resource Found: {}", e.getMessage());
 
         return ResponseEntity
                 .status(ErrorCode.RESOURCE_NOT_FOUND.getHttpStatus())
@@ -109,7 +121,7 @@ public class GlobalExceptionHandler {
     // 지원하지 않는 Content-Type 요청
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     protected ResponseEntity<ApiResponse<Void>> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException e) {
-        log.error("Media Type NotSupported : {}", e.getMessage());
+        log.warn("Media Type NotSupported : {}", e.getMessage());
         return ResponseEntity
                 .status(ErrorCode.UNSUPPORTED_MEDIA_TYPE.getHttpStatus())
                 .body(ApiResponse.fail(
