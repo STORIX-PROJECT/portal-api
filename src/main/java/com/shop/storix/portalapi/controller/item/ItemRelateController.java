@@ -27,23 +27,13 @@ public class ItemRelateController {
             summary = "연관상품 검색",
             description = "연관상품 검색합니다"
     )
-
     @GetMapping("/search/{itemNo}")
     public ResponseEntity<ApiResponse<List<RelateItemDto.RelateItemResponse>>> relateItem(@PathVariable Long itemNo) {
         log.info("RelateItem search request - itemNo : {}",itemNo);
+        List<RelateItemDto.RelateItemResponse> response = itemRelateService.relateItem(itemNo);
 
-        List<RelateItemDto.RelateDto> relate = itemRelateService.relateItem(itemNo);
+        log.info("RelateItem search response - resultCount : {}",response.size());
 
-        List<RelateItemDto.RelateItemResponse> response = relate.stream()
-                .map(item -> RelateItemDto.RelateItemResponse.builder()
-                        .itemNo(item.itemNo())
-                        .itemName(item.itemName())
-                        .itemStatus(item.itemStatus())
-                        .price(item.price())
-                        .imgUrl(item.imgUrl())
-                        .orderCount(item.orderCount())
-                        .build())
-                .toList();
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 }

@@ -4,11 +4,11 @@ import com.shop.storix.portalapi.model.dto.item.relate.RelateItemDto;
 import java.util.List;
 
 public class ItemRelateAssembler {
-    public static List<RelateItemDto.ControllerResponse> toRelateGroup(
-            List<RelateItemDto.RelateResponse> response
+    public static List<RelateItemDto.RelateItemResponse> toRelateGroup(
+            List<RelateItemDto.RelateDto> response
     ) {
         return response.stream()
-                .map(relate -> RelateItemDto.ControllerResponse.builder()
+                .map(relate -> RelateItemDto.RelateItemResponse.builder()
                         .itemNo(relate.itemNo())
                         .itemName(relate.itemName())
                         .itemStatus(relate.itemStatus())
