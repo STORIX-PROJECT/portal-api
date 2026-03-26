@@ -1,6 +1,7 @@
 package com.shop.storix.portalapi.config.mybatis;
 
 import com.shop.storix.portalapi.common.CodeEnum;
+import com.shop.storix.portalapi.common.exception.InvalidCodeEnumException;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
@@ -46,7 +47,7 @@ public class EnumTypeHandler<E extends Enum<E> & CodeEnum> extends BaseTypeHandl
         return EnumSet.allOf(type).stream()
                 .filter(e -> e.getCode().equals(code))
                 .findFirst()
-                .orElseThrow(); //Hack : 에러 처리 구현해야함
+                .orElseThrow(()-> new InvalidCodeEnumException(type,code));
     }
 }
 
