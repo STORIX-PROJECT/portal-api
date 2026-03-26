@@ -4,7 +4,6 @@ import com.shop.storix.portalapi.model.dto.item.relate.RelateItemDto;
 import java.util.List;
 
 public class ItemRelateAssembler {
-    private ItemRelateAssembler () {}
     public static List<RelateItemDto.RelateItemResponse> toRelateGroup(
             List<RelateItemDto.RelateDto> response
     ) {
@@ -18,4 +17,6 @@ public class ItemRelateAssembler {
                         .build())
                 .toList();
         }
+
+        private ItemRelateAssembler () {}
     }
