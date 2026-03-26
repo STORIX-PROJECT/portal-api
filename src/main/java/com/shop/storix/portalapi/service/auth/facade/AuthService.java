@@ -71,8 +71,10 @@ public class AuthService {
 
     public void deleteRefreshToken (HttpServletRequest request){
         String refreshToken = jwtProvider.resolveRefreshToken(request, REFRESH_COOKIE_NAME);
+        Claims claims = jwtProvider.parseRefreshClaims(refreshToken);
 
-
+        String userLoginNo = claims.getSubject();
+        tokenService.delete(userLoginNo);
     }
 
     private static UserPrincipal toPrincipal(AuthDto.AuthUser authUser) {

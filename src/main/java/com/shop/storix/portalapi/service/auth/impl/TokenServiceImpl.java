@@ -23,8 +23,8 @@ public class TokenServiceImpl implements TokenService {
                 .orElseThrow(()-> new JwtAuthenticationException(TokenStatus.INVALID));
     }
 
-    public void delete(String refreshToken) {
-        refreshTokenRepository.deleteByUserLoginNo(refreshToken);
+    public void delete(String userLoginNo) {
+        refreshTokenRepository.deleteByUserLoginNo(userLoginNo);
     }
 
 }
