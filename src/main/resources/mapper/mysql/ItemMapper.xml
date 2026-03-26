@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shop.storix.portalapi.mapper.item.ItemMapper">
+
+    <select id="relateItem" resultType="RelateDto">
+        SELECT  item.ITEM_NO AS itemNo
+             ,  item.ITEM_NAME AS itemName
+             ,  MAX(io.PRICE) AS price
+             ,  img.IMG_URL AS imgUrl
+             ,  COUNT(DISTINCT od.ORDER_NO) AS orderCount
+          FROM  OMS.ITEM item
+
+          JOIN  OMS.ITEM_CATEGORY_MAPPING icm ON icm.ITEM_NO = item.ITEM_NO
+
+          LEFT  JOIN OMS.ITEM_OPTION_GROUP iog ON iog.ITEM_NO = item.ITEM_NO
+
+          LEFT  JOIN OMS.ITEM_OPTION io ON io.GROUP_NO = iog.GROUP_NO
+
+          LEFT  JOIN OMS.ITEM_IMAGES img ON img.ITEM_NO = item.ITEM_NO
+           AND  img.PRIMARY_YN = 'Y'
+
+          LEFT  JOIN OMS.ORDER_DETAIL od ON od.ITEM_NO = item.ITEM_NO
+
+         WHERE  icm.CATEGORY_NO IN (
+                SELECT  CATEGORY_NO
+                  FROM  OMS.ITEM_CATEGORY_MAPPING
+                 WHERE  ITEM_NO = #{itemNo}
+                 )
+           AND  item.ITEM_NO != #{itemNo}
+           AND  item.ITEM_STATUS = 'ACTIVE'
+           AND  item.DELETED_DT IS NULL
+
+         GROUP  BY item.ITEM_NO
+             ,  item.ITEM_NAME
+             ,  img.IMG_URL
+
+         ORDER  BY orderCount DESC
+         LIMIT  5
+    </select>
+
+</mapper>
