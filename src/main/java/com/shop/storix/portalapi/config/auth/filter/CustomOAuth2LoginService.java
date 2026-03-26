@@ -1,5 +1,7 @@
 package com.shop.storix.portalapi.config.auth.filter;
 
+import com.shop.storix.portalapi.common.ErrorCode;
+import com.shop.storix.portalapi.common.exception.StorixException;
 import com.shop.storix.portalapi.model.dto.auth.AccountStatus;
 import com.shop.storix.portalapi.model.dto.auth.UserPrincipal;
 import com.shop.storix.portalapi.model.dto.auth.domain.*;
@@ -54,7 +56,8 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
 
         AuthDto.Login user = getLogin(userIdentifier, providerInfo);
 
-        AuthDto.OAuthLogin oAuthLoginDto = loginMapper.findOAuthLoginByOAuthInfo(userIdentifier,providerInfo.name()).orElseThrow();
+        AuthDto.OAuthLogin oAuthLoginDto = loginMapper.findOAuthLoginByOAuthInfo(userIdentifier,providerInfo.name())
+                .orElseThrow(()-> new StorixException(ErrorCode.OAUTH_NOT_FOUND));
 
         List<AuthDto.Role> roles = loginMapper.findUserRoleByLoginNo(user);
 
@@ -85,6 +88,6 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
 
             return unregisteredUser;
         }
-        return optionalLogin.orElseThrow(); // HACK: 에러 처리 해야함
+        return optionalLogin.orElseThrow(()-> new StorixException(ErrorCode.OAUTH_NOT_FOUND));
     }
 }
