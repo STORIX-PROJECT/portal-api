@@ -27,7 +27,7 @@ public class ItemRelateServiceImpl implements ItemRelateService {
     public List<RelateItemDto.RelateItemResponse> relateItem(Long itemNo) {
         log.info("RelateItem search start - itemNo : {}",itemNo);
 
-        if(itemNo == null || itemNo <= 0) {
+        if(itemNo <= 0) {
             log.error("RelateItem search failed - Invalid itemNo : {}", itemNo);
             throw new StorixException(ErrorCode.INVALID_INPUT);
         }
