@@ -7,7 +7,6 @@
         SELECT  item.ITEM_NO AS itemNo
              ,  item.ITEM_NAME AS itemName
              ,  MAX(io.PRICE) AS price
-             ,  item.ITEM_STATUS AS itemStatus
              ,  img.IMG_URL AS imgUrl
              ,  COUNT(DISTINCT od.ORDER_NO) AS orderCount
           FROM  OMS.ITEM item
