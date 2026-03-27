@@ -1,7 +1,6 @@
 package com.shop.storix.portalapi.config.auth.handler;
 
 import com.shop.storix.portalapi.model.dto.auth.UserPrincipal;
-import com.shop.storix.portalapi.service.auth.LoginCheckService;
 import com.shop.storix.portalapi.service.auth.facade.JwtProvider;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -23,26 +22,20 @@ import java.io.IOException;
 public class SuccessHandler implements AuthenticationSuccessHandler {
 
     public SuccessHandler(@Value("${storix.web-main-url}") String redirectUrl,
-                          @Value("${storix.web-oauth-add-url}") String redirectOauthUrl,
                           @Value("${jwt.access-expiration}") int accessExpiration,
                           @Value("${jwt.refresh-expiration}") int refreshExpiration,
-                          JwtProvider jwtProvider ,
-                          LoginCheckService loginCheckService
+                          JwtProvider jwtProvider
     ) {
         this.redirectUrl = redirectUrl;
-        this.redirectOauthUrl = redirectOauthUrl;
         this.accessExpiration = accessExpiration;
         this.refreshExpiration = refreshExpiration;
         this.jwtProvider = jwtProvider;
-        this.loginCheckService = loginCheckService;
     }
 
     private final String redirectUrl;
-    private final String redirectOauthUrl;
     private final int accessExpiration;
     private final int refreshExpiration;
     private final JwtProvider jwtProvider;
-    private final LoginCheckService loginCheckService;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Override
