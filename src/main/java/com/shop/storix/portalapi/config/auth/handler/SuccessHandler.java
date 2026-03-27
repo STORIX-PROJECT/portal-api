@@ -1,7 +1,6 @@
 package com.shop.storix.portalapi.config.auth.handler;
 
 import com.shop.storix.portalapi.model.dto.auth.UserPrincipal;
-import com.shop.storix.portalapi.service.auth.LoginCheckService;
 import com.shop.storix.portalapi.service.auth.facade.JwtProvider;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -23,20 +22,20 @@ import java.io.IOException;
 public class SuccessHandler implements AuthenticationSuccessHandler {
 
     public SuccessHandler(@Value("${storix.web-main-url}") String redirectUrl,
-                          @Value("${storix.web-oauth-add-url}") String redirectOauthUrl,
-                          JwtProvider jwtProvider ,
-                          LoginCheckService loginCheckService
+                          @Value("${jwt.access-expiration}") int accessExpiration,
+                          @Value("${jwt.refresh-expiration}") int refreshExpiration,
+                          JwtProvider jwtProvider
     ) {
         this.redirectUrl = redirectUrl;
-        this.redirectOauthUrl = redirectOauthUrl;
+        this.accessExpiration = accessExpiration;
+        this.refreshExpiration = refreshExpiration;
         this.jwtProvider = jwtProvider;
-        this.loginCheckService = loginCheckService;
     }
 
     private final String redirectUrl;
-    private final String redirectOauthUrl;
+    private final int accessExpiration;
+    private final int refreshExpiration;
     private final JwtProvider jwtProvider;
-    private final LoginCheckService loginCheckService;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Override
@@ -52,21 +51,15 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
         Cookie accessCookie = jwtProvider.createCookie(
                 "ACCESS_TOKEN",
                 accessToken,
-                1200000 // 임시
+                accessExpiration
         );
         String refreshToken = jwtProvider.generateRefreshToken(userPrincipal);
 
         ResponseCookie refreshCookie = jwtProvider.setTokenToCookie("REFRESH_TOKEN", refreshToken,
-                1200000 /* 임시 */ / 1000);
+                refreshExpiration);
 
         response.addCookie(accessCookie);
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-
-        if (userPrincipal.getOAuthLoginDto() != null
-                && !loginCheckService.checkUserProfile(userPrincipal.getUsername())) {
-            redirectStrategy.sendRedirect(request, response, redirectOauthUrl);
-            return;
-        }
 
         redirectStrategy.sendRedirect(request, response, redirectUrl);
     }
