@@ -8,9 +8,8 @@ import java.util.List;
 
 @Mapper
 public interface ItemWishMapper {
-    boolean existsDeleteWish(@Param("itemNo") Long itemNo, @Param("userLoginNo") String userLoginNo);
     int deleteWish(@Param("itemNo") Long itemNo, @Param("userLoginNo") String userLoginNo);
-    boolean existsWish(ItemWishDto.ItemWishRequest request);
-    int addWish(ItemWishDto.ItemWishRequest request);
-    List<ItemWishDto.ItemWishResponse> findWish(String userLoginNo);
+    boolean existsWish(@Param("itemNo") Long itemNo, @Param("userLoginNo") String userLoginNo);
+    int addWish(@Param("itemNo") Long itemNo, @Param("userLoginNo") String userLoginNo, @Param("createdDt") String createdDt);
+    List<ItemWishDto.ItemWishResponse> findWish(@Param("userLoginNo") String userLoginNo);
 }

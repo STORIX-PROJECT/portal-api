@@ -16,13 +16,6 @@
            AND  ITEM_NO = #{itemNo}
     </select>
 
-    <select id="existsDeleteWish" resultType="boolean">
-        SELECT  COUNT(*) > 0
-          FROM  OMS.ITEM_WISHLIST
-         WHERE  USER_LOGIN_NO = #{userLoginNo}
-           AND  ITEM_NO = #{itemNo}
-    </select>
-      
     <insert id="addWish">
         INSERT  INTO OMS.ITEM_WISHLIST (
                 USER_LOGIN_NO

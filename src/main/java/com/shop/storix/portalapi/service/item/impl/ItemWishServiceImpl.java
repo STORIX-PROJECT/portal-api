@@ -22,45 +22,40 @@ public class ItemWishServiceImpl implements ItemWishService {
     public void deleteWish(Long itemNo, String userLoginNo) {
         log.info("Delete Wish started - itemNo : {}, userLoginNo : {}", itemNo, userLoginNo);
 
-            if (!itemWishMapper.existsDeleteWish(itemNo, userLoginNo)) {
-                log.info("Delete Wish Not found - itemNo : {}, userLoginNo : {}",itemNo, userLoginNo);
-                throw new StorixException(ErrorCode.RESOURCE_NOT_FOUND);
-            }
+        int deleteCount = itemWishMapper.deleteWish(itemNo, userLoginNo);
 
-            int deleteCount = itemWishMapper.deleteWish(itemNo, userLoginNo);
+        if (deleteCount == 0) {
+            log.info("Delete Wish Not found - itemNo : {}, userLoginNo : {}", itemNo, userLoginNo);
+            throw new StorixException(ErrorCode.WISH_NOT_FOUND);
+        }
 
-            if (deleteCount == 0) {
-                log.error("Delete Fail - itemNo : {}",itemNo);
-                throw new StorixException(ErrorCode.INTERNAL_SERVER_ERROR);
-            }
-            log.info("Delete Wish Completed - itemNo : {}, userLoginNo : {}",itemNo, userLoginNo);
-
+        log.info("Delete Wish Completed - itemNo : {}, userLoginNo : {}", itemNo, userLoginNo);
     }
 
     @Override
-    public void addWishList(ItemWishDto.ItemWishRequest request) {
-        log.info("Add Wish started - itemNo : {}, userLoginNo : {}",request.itemNo(), request.userLoginNo());
+    public void addWishList(ItemWishDto.ItemWishRequest request, String userLoginNo) {
+        log.info("Add Wish started - itemNo : {}, userLoginNo : {}", request.itemNo(), userLoginNo);
 
-        if (itemWishMapper.existsWish(request)) {
-            throw new StorixException(ErrorCode.INVALID_INPUT);
+        if (itemWishMapper.existsWish(request.itemNo(), userLoginNo)) {
+            throw new StorixException(ErrorCode.WISH_ALREADY_EXISTS);
         }
 
-        int insertCount = itemWishMapper.addWish(request);
+        int insertCount = itemWishMapper.addWish(request.itemNo(), userLoginNo, request.createdDt());
 
-        if(insertCount == 0) {
-            log.error("Insert Fail - itemNo: {}",request.itemNo());
+        if (insertCount == 0) {
+            log.error("Insert Fail - itemNo: {}", request.itemNo());
             throw new StorixException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-        log.info("Insert Wish Completed");
+        log.info("Insert Wish Completed - itemNo : {}", request.itemNo());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ItemWishDto.ItemWishResponse> findWishList(String userLoginNo) {
-        log.info("Find Wish started - userLoginNo : {}",userLoginNo);
+        log.info("Find Wish started - userLoginNo : {}", userLoginNo);
         List<ItemWishDto.ItemWishResponse> findWish = itemWishMapper.findWish(userLoginNo);
 
-        log.info("Find wishList completed - wishCount : {}",findWish.size());
+        log.info("Find wishList completed - wishCount : {}", findWish.size());
         return findWish;
     }
 }

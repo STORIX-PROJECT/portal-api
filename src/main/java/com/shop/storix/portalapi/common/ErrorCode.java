@@ -24,11 +24,14 @@ public enum ErrorCode implements CodeEnum {
 
     // ========== LOG: 로그인  ==========
     LOGIN_NOT_FOUND(HttpStatus.NOT_FOUND, "LOG:001", "해당 로그인 계정을 찾을 수 없습니다."),
+    OAUTH_NOT_FOUND(HttpStatus.NOT_FOUND, "LOG:002", "해당 OAuth 로그인 계정을 찾을 수 없습니다."),
 
     // ========== PUR: 구매자 ==========
     // PUR:001 ~ 순차 부여 예정.
 
-
+    // ========== WIS: 위시리스트 ==========
+    WISH_ALREADY_EXISTS(HttpStatus.CONFLICT, "WIS:001", "이미 찜한 상품입니다."),
+    WISH_NOT_FOUND(HttpStatus.NOT_FOUND, "WIS:002", "위시리스트에 해당 상품이 없습니다.")
 
     ;
 
