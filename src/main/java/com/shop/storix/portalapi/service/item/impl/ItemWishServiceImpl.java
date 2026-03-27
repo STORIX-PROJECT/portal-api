@@ -1,5 +1,7 @@
 package com.shop.storix.portalapi.service.item.impl;
 
+import com.shop.storix.portalapi.common.ErrorCode;
+import com.shop.storix.portalapi.common.exception.StorixException;
 import com.shop.storix.portalapi.mapper.item.ItemWishMapper;
 import com.shop.storix.portalapi.model.dto.item.wish.ItemWishDto;
 import com.shop.storix.portalapi.service.item.ItemWishService;
@@ -17,37 +19,45 @@ public class ItemWishServiceImpl implements ItemWishService {
     private final ItemWishMapper itemWishMapper;
 
     @Override
-    public void deleteWish(ItemWishDto.DeleteWishRequest request) {
-        log.info("Delete Wish started - itemNo : {}, userLoginNo : {}", request.itemNo(), request.userLoginNo());
+    @Transactional
+    public void deleteWish(Long itemNo, String userLoginNo) {
+        log.info("Delete Wish started - itemNo : {}, userLoginNo : {}", itemNo, userLoginNo);
 
-            if (!itemWishMapper.existsWish(request)) {
-                log.info("Delete Wish Not found - itemNo : {}, userLoginNo : {}", request.itemNo(), request.userLoginNo());
-                throw new IllegalArgumentException("위시가 존재하지 않습니다.");
+            if (!itemWishMapper.existsDeleteWish(itemNo, userLoginNo)) {
+                log.info("Delete Wish Not found - itemNo : {}, userLoginNo : {}",itemNo, userLoginNo);
+                throw new StorixException(ErrorCode.RESOURCE_NOT_FOUND);
             }
 
-            int deleteCount = itemWishMapper.deleteWish(request);
+            int deleteCount = itemWishMapper.deleteWish(itemNo, userLoginNo);
 
             if (deleteCount == 0) {
-                log.error("Delete Fail - itemNo : {}",request.itemNo());
-                throw new IllegalArgumentException("위시 삭제에 실패했습니다.");
+                log.error("Delete Fail - itemNo : {}",itemNo);
+                throw new StorixException(ErrorCode.INTERNAL_SERVER_ERROR);
             }
-            log.info("Delete Wish Completed - itemNo : {}, userLoginNo : {}", request.itemNo(), request.userLoginNo());
+            log.info("Delete Wish Completed - itemNo : {}, userLoginNo : {}",itemNo, userLoginNo);
 
     }
 
     @Override
+    @Transactional
     public void addWishList(ItemWishDto.ItemWishRequest request) {
         log.info("Add Wish started - itemNo : {}, userLoginNo : {}",request.itemNo(), request.userLoginNo());
 
         if (itemWishMapper.existsWish(request)) {
-            throw new IllegalArgumentException("이미 찜한 상품입니다.");
+            throw new StorixException(ErrorCode.INVALID_INPUT);
         }
 
-        log.info("Add Wish Completed");
-        itemWishMapper.addWish(request);
+        int insertCount = itemWishMapper.addWish(request);
+
+        if(insertCount == 0) {
+            log.error("Insert Fail - itemNo: {}",request.itemNo());
+            throw new StorixException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        log.info("Insert Wish Completed");
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemWishDto.ItemWishResponse> findWishList(String userLoginNo) {
         log.info("Find Wish started - userLoginNo : {}",userLoginNo);
         List<ItemWishDto.ItemWishResponse> findWish = itemWishMapper.findWish(userLoginNo);

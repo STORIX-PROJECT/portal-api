@@ -24,10 +24,10 @@ public class ItemWishController {
             summary = "상품 위시리스트 삭제",
             description = "사용자번호, 상품번호를 통해 해당 상품의 위시를 삭제합니다."
     )
-    @DeleteMapping("/delete")
-    public ApiResponse<String> deleteWish(@Valid @RequestBody ItemWishDto.DeleteWishRequest request) {
-        log.info("Delete Wish request - itemNo : {}, userLoginNo : {}", request.itemNo(), request.userLoginNo());
-        itemWishService.deleteWish(request);
+    @DeleteMapping("/{itemNo}")
+    public ApiResponse<String> deleteWish(@Valid @PathVariable Long itemNo, @RequestParam String userLoginNo) {
+        log.info("Delete Wish request - itemNo : {}, userLoginNo : {}",itemNo, userLoginNo);
+        itemWishService.deleteWish(itemNo, userLoginNo);
         return ApiResponse.ok("위시 해제 완료");
 
     }
@@ -37,11 +37,11 @@ public class ItemWishController {
             description = "사용자번호, 상품번호를 통해 상품의 위시리스트 추가합니다."
     )
     @PostMapping("/add")
-    public ApiResponse<?> addWish(@Valid @RequestBody ItemWishDto.ItemWishRequest request) {
+    public ApiResponse<String> addWish(@Valid @RequestBody ItemWishDto.ItemWishRequest request) {
         log.info("ItemWish add request - itemNo : {}, userLoginNo : {}",request.itemNo(), request.userLoginNo());
 
         itemWishService.addWishList(request);
-        return ApiResponse.ok(request);
+        return ApiResponse.ok("위시리스트 추가 성공");
     }
 
 
