@@ -15,7 +15,7 @@
          WHERE  USER_LOGIN_NO = #{userLoginNo}
            AND  ITEM_NO = #{itemNo}
     </select>
-      
+
     <insert id="addWish">
         INSERT  INTO OMS.ITEM_WISHLIST (
                 USER_LOGIN_NO
@@ -30,12 +30,11 @@
     </insert>
 
     <select id="findWish" resultType="ItemWishResponse">
-        SELECT  ul.USER_LOGIN_NO AS userLoginNo
+        SELECT  iw.USER_LOGIN_NO AS userLoginNo
              ,  item.ITEM_NO AS itemNo
              ,  item.ITEM_NAME AS itemName
              ,  iw.CREATED_DT AS createdDt
           FROM  OMS.ITEM_WISHLIST iw
-          JOIN  OMS.USER_LOGIN ul ON ul.USER_LOGIN_NO = iw.USER_LOGIN_NO
           JOIN  OMS.ITEM item ON item.ITEM_NO = iw.ITEM_NO
          WHERE  iw.USER_LOGIN_NO = #{userLoginNo}
            AND  item.DELETED_DT IS NULL
