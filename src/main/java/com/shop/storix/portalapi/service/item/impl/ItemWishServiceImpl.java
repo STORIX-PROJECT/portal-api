@@ -19,7 +19,6 @@ public class ItemWishServiceImpl implements ItemWishService {
     private final ItemWishMapper itemWishMapper;
 
     @Override
-    @Transactional
     public void deleteWish(Long itemNo, String userLoginNo) {
         log.info("Delete Wish started - itemNo : {}, userLoginNo : {}", itemNo, userLoginNo);
 
@@ -39,7 +38,6 @@ public class ItemWishServiceImpl implements ItemWishService {
     }
 
     @Override
-    @Transactional
     public void addWishList(ItemWishDto.ItemWishRequest request) {
         log.info("Add Wish started - itemNo : {}, userLoginNo : {}",request.itemNo(), request.userLoginNo());
 
