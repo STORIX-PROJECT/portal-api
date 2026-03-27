@@ -68,12 +68,6 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
         response.addCookie(accessCookie);
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
-        if (userPrincipal.getOAuthLoginDto() != null
-                && !loginCheckService.checkUserProfile(userPrincipal.getUsername())) {
-            redirectStrategy.sendRedirect(request, response, redirectOauthUrl);
-            return;
-        }
-
         redirectStrategy.sendRedirect(request, response, redirectUrl);
     }
 
