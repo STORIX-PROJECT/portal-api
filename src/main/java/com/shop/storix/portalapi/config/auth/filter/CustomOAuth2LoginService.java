@@ -2,6 +2,7 @@ package com.shop.storix.portalapi.config.auth.filter;
 
 import com.shop.storix.portalapi.common.ErrorCode;
 import com.shop.storix.portalapi.common.exception.StorixException;
+import com.shop.storix.portalapi.mapper.purchaser.PurchaserMapper;
 import com.shop.storix.portalapi.model.dto.auth.AccountStatus;
 import com.shop.storix.portalapi.model.dto.auth.UserPrincipal;
 import com.shop.storix.portalapi.model.dto.auth.domain.*;
@@ -9,6 +10,7 @@ import com.shop.storix.portalapi.mapper.auth.LoginMapper;
 import com.shop.storix.portalapi.model.dto.auth.userInfo.OAuth2UserInfo;
 import com.shop.storix.portalapi.model.dto.auth.ProviderInfo;
 import com.shop.storix.portalapi.model.dto.auth.userInfo.OAuth2UserInfoFactory;
+import com.shop.storix.portalapi.model.dto.purchaser.domain.PurchaserDto;
 import com.shop.storix.portalapi.util.UuidUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +33,7 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
 
     private final LoginMapper loginMapper;
     private final PasswordEncoder passwordEncoder;
+    private final PurchaserMapper purchaserMapper;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -53,8 +56,9 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
         // 소셜 종류에 따른 사용자 OAuth 정보 반환
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerInfo, attributes);
         String userIdentifier = oAuth2UserInfo.getOAuth2Id();
+        String emailInfo = oAuth2UserInfo.getEmail();
 
-        AuthDto.Login user = getLogin(userIdentifier, providerInfo);
+        AuthDto.Login user = getLogin(userIdentifier,emailInfo,providerInfo);
 
         AuthDto.OAuthLogin oAuthLoginDto = loginMapper.findOAuthLoginByOAuthInfo(userIdentifier,providerInfo.name())
                 .orElseThrow(()-> new StorixException(ErrorCode.OAUTH_NOT_FOUND));
@@ -64,7 +68,7 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
         return new UserPrincipal(user, oAuthLoginDto,roles, attributes, key);
     }
 
-    private AuthDto.Login getLogin(String userIdentifier, ProviderInfo providerInfo) {
+    private AuthDto.Login getLogin(String userIdentifier, String emailInfo, ProviderInfo providerInfo) {
         Optional<AuthDto.Login> optionalLogin = loginMapper.findLoginByOAuthInfo(userIdentifier, providerInfo.name());
 
         if (optionalLogin.isEmpty()) {
@@ -85,7 +89,14 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
             loginMapper.insertUserRole(userRole);
 
             /*사용자 정보 없을떄 구매자 정보도 같이 저장*/
-
+            String purchaserUuid = UuidUtil.randomUuid();
+            PurchaserDto.Purchaser purchaser = new PurchaserDto.Purchaser(purchaserUuid,
+                    loginUuid,
+                    null,
+                    null,
+                    emailInfo);
+            purchaserMapper.insertPurchaserProfile(purchaser);
+            
             return unregisteredUser;
         }
         return optionalLogin.orElseThrow(()-> new StorixException(ErrorCode.OAUTH_NOT_FOUND));
