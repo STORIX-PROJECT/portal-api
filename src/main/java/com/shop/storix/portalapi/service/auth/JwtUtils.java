@@ -1,6 +1,7 @@
 package com.shop.storix.portalapi.service.auth;
 
 import com.shop.storix.portalapi.model.dto.auth.TokenStatus;
+import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
 import com.shop.storix.portalapi.util.EncodeUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -19,17 +20,18 @@ import java.util.Arrays;
 
 @Component
 public class JwtUtils {
-    public TokenStatus getTokenStatus(String token, Key secretKey) {
+    public AuthDto.TokenResult getTokenStatus(String token, Key secretKey) {
         try {
-            Jwts.parser()
+            Claims claims = Jwts.parser()
                     .setSigningKey(secretKey)
                     .build()
-                    .parseClaimsJws(token);
-            return TokenStatus.AUTHENTICATED;
+                    .parseClaimsJws(token)
+                    .getBody();
+            return new AuthDto.TokenResult(TokenStatus.AUTHENTICATED, claims);
         } catch (ExpiredJwtException e) {
-            return TokenStatus.EXPIRED;
+            return new AuthDto.TokenResult(TokenStatus.EXPIRED, e.getClaims());
         } catch (JwtException e) {
-            return TokenStatus.INVALID;
+            return new AuthDto.TokenResult(TokenStatus.INVALID, null);
         }
     }
 
@@ -56,7 +58,6 @@ public class JwtUtils {
                 .findFirst()
                 .orElse(null);
     }
-
 
     public Key getSigningKey(String secretKey) {
         String encodedKey = EncodeUtil.encodeToBase64(secretKey);

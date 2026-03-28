@@ -1,6 +1,8 @@
 package com.shop.storix.portalapi.model.dto.auth.domain;
 
 import com.shop.storix.portalapi.model.dto.auth.AccountStatus;
+import com.shop.storix.portalapi.model.dto.auth.TokenStatus;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import org.apache.ibatis.type.Alias;
@@ -71,5 +73,7 @@ public class AuthDto {
 
     public record AuthUser(Login login, List<Role> roles) {
     }
+
+    public record TokenResult(TokenStatus status, Claims claims) {}
 
 }

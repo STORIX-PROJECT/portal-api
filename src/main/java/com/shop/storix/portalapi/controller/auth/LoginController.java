@@ -58,7 +58,7 @@ public class LoginController {
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<String>> signOut (HttpServletRequest request , HttpServletResponse response)
     {
-        authService.deleteRefreshToken(request);
+        authService.deleteRefreshToken(request ,response);
         return ResponseEntity.ok(
                 ApiResponse.ok("삭제 완료")
         );
