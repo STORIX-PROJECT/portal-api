@@ -20,7 +20,7 @@ public class JsonLoginAuthenticationFilter extends AbstractAuthenticationProcess
 
     public JsonLoginAuthenticationFilter() {
         super( PathPatternRequestMatcher.withDefaults()
-                .matcher(HttpMethod.POST,"/api/v1/login"));
+                .matcher(HttpMethod.POST,"/api/v1/auth/login"));
     }
 
     @Override

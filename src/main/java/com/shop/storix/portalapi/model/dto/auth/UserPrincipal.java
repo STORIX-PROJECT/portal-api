@@ -85,4 +85,9 @@ public class UserPrincipal implements UserDetails , OAuth2User {
     public boolean isEnabled() {
         return login.active() != AccountStatus.INACTIVE;
     }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 }
