@@ -72,13 +72,13 @@ public class AuthService {
         String newRefreshToken = jwtProvider.generateRefreshToken(userPrincipal);
 
         Cookie accessCookie = jwtProvider.createCookie(
-                "ACCESS_TOKEN",
+                ACCESS_COOKIE_NAME,
                 newAccessToken,
                 ACCESS_EXPIRATION
         );
 
         ResponseCookie refreshCookie = jwtProvider.setTokenToCookie(
-                "REFRESH_TOKEN",
+                REFRESH_COOKIE_NAME,
                 newRefreshToken,
                 REFRESH_EXPIRATION
         );
