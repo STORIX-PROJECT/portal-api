@@ -22,7 +22,7 @@ public enum CommonErrorCode implements ErrorCodeEnum {
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COM:004", "지원하지 않는 HTTP 메서드입니다."),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "COM:005", "요청한 리소스를 찾을 수 없습니다."),
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "COM:006", "지원하지 않는 Content-Type입니다."),
-
+    DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "COM:007", "이미 존재하는 리소스입니다."),
 
     ;
 
