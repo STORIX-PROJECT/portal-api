@@ -1,6 +1,6 @@
 package com.shop.storix.portalapi.service.item.impl;
 
-import com.shop.storix.portalapi.common.ErrorCode;
+import com.shop.storix.portalapi.common.error.CommonErrorCode;
 import com.shop.storix.portalapi.common.exception.StorixException;
 import com.shop.storix.portalapi.mapper.item.ItemMapper;
 import com.shop.storix.portalapi.model.dto.item.relate.RelateItemDto;
@@ -29,7 +29,7 @@ public class ItemRelateServiceImpl implements ItemRelateService {
 
         if(itemNo <= 0) {
             log.error("RelateItem search failed - Invalid itemNo : {}", itemNo);
-            throw new StorixException(ErrorCode.INVALID_INPUT);
+            throw new StorixException(CommonErrorCode.INVALID_INPUT);
         }
 
         List<RelateItemDto.RelateDto> relateList = itemMapper.relateItem(itemNo);

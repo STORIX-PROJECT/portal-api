@@ -1,6 +1,7 @@
 package com.shop.storix.portalapi.service.item.impl;
 
-import com.shop.storix.portalapi.common.ErrorCode;
+import com.shop.storix.portalapi.common.error.CommonErrorCode;
+import com.shop.storix.portalapi.common.error.WishListErrorCode;
 import com.shop.storix.portalapi.common.exception.StorixException;
 import com.shop.storix.portalapi.mapper.item.ItemWishMapper;
 import com.shop.storix.portalapi.model.dto.item.wish.ItemWishDto;
@@ -26,7 +27,7 @@ public class ItemWishServiceImpl implements ItemWishService {
 
         if (deleteCount == 0) {
             log.info("Delete Wish Not found - itemNo : {}, userLoginNo : {}", itemNo, userLoginNo);
-            throw new StorixException(ErrorCode.WISH_NOT_FOUND);
+            throw new StorixException(WishListErrorCode.WISH_NOT_FOUND);
         }
 
         log.info("Delete Wish Completed - itemNo : {}, userLoginNo : {}", itemNo, userLoginNo);
@@ -37,14 +38,14 @@ public class ItemWishServiceImpl implements ItemWishService {
         log.info("Add Wish started - itemNo : {}, userLoginNo : {}", request.itemNo(), userLoginNo);
 
         if (itemWishMapper.existsWish(request.itemNo(), userLoginNo)) {
-            throw new StorixException(ErrorCode.WISH_ALREADY_EXISTS);
+            throw new StorixException(WishListErrorCode.WISH_ALREADY_EXISTS);
         }
 
         int insertCount = itemWishMapper.addWish(request.itemNo(), userLoginNo, request.createdDt());
 
         if (insertCount == 0) {
             log.error("Insert Fail - itemNo: {}", request.itemNo());
-            throw new StorixException(ErrorCode.INTERNAL_SERVER_ERROR);
+            throw new StorixException(CommonErrorCode.INTERNAL_SERVER_ERROR);
         }
         log.info("Insert Wish Completed - itemNo : {}", request.itemNo());
     }
