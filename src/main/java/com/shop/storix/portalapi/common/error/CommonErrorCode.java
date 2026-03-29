@@ -1,5 +1,6 @@
-package com.shop.storix.portalapi.common;
+package com.shop.storix.portalapi.common.error;
 
+import com.shop.storix.portalapi.common.ErrorCodeEnum;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import org.springframework.http.HttpStatus;
  */
 @Getter
 @RequiredArgsConstructor
-public enum ErrorCode implements CodeEnum {
+public enum CommonErrorCode implements ErrorCodeEnum {
 
     // ========== COM: 공통 ==========
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "COM:001", "잘못된 입력입니다."),
@@ -22,16 +23,6 @@ public enum ErrorCode implements CodeEnum {
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "COM:005", "요청한 리소스를 찾을 수 없습니다."),
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "COM:006", "지원하지 않는 Content-Type입니다."),
 
-    // ========== LOG: 로그인  ==========
-    LOGIN_NOT_FOUND(HttpStatus.NOT_FOUND, "LOG:001", "해당 로그인 계정을 찾을 수 없습니다."),
-    OAUTH_NOT_FOUND(HttpStatus.NOT_FOUND, "LOG:002", "해당 OAuth 로그인 계정을 찾을 수 없습니다."),
-
-    // ========== PUR: 구매자 ==========
-    // PUR:001 ~ 순차 부여 예정.
-
-    // ========== WIS: 위시리스트 ==========
-    WISH_ALREADY_EXISTS(HttpStatus.CONFLICT, "WIS:001", "이미 찜한 상품입니다."),
-    WISH_NOT_FOUND(HttpStatus.NOT_FOUND, "WIS:002", "위시리스트에 해당 상품이 없습니다.")
 
     ;
 

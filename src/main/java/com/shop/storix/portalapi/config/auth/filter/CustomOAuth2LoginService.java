@@ -1,6 +1,6 @@
 package com.shop.storix.portalapi.config.auth.filter;
 
-import com.shop.storix.portalapi.common.ErrorCode;
+import com.shop.storix.portalapi.common.error.LoginErrorCode;
 import com.shop.storix.portalapi.common.exception.StorixException;
 import com.shop.storix.portalapi.mapper.purchaser.PurchaserMapper;
 import com.shop.storix.portalapi.model.dto.auth.AccountStatus;
@@ -61,7 +61,7 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
         AuthDto.Login user = getLogin(userIdentifier,emailInfo,providerInfo);
 
         AuthDto.OAuthLogin oAuthLoginDto = loginMapper.findOAuthLoginByOAuthInfo(userIdentifier,providerInfo.name())
-                .orElseThrow(()-> new StorixException(ErrorCode.OAUTH_NOT_FOUND));
+                .orElseThrow(()-> new StorixException(LoginErrorCode.OAUTH_NOT_FOUND));
 
         List<AuthDto.Role> roles = loginMapper.findUserRoleByLoginNo(user);
 
@@ -99,6 +99,6 @@ public class CustomOAuth2LoginService implements OAuth2UserService<OAuth2UserReq
             
             return unregisteredUser;
         }
-        return optionalLogin.orElseThrow(()-> new StorixException(ErrorCode.OAUTH_NOT_FOUND));
+        return optionalLogin.orElseThrow(()-> new StorixException(LoginErrorCode.OAUTH_NOT_FOUND));
     }
 }

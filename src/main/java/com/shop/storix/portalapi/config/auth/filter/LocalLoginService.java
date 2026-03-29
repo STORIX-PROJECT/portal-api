@@ -1,6 +1,6 @@
 package com.shop.storix.portalapi.config.auth.filter;
 
-import com.shop.storix.portalapi.common.ErrorCode;
+import com.shop.storix.portalapi.common.error.LoginErrorCode;
 import com.shop.storix.portalapi.common.exception.StorixException;
 import com.shop.storix.portalapi.mapper.auth.LoginMapper;
 import com.shop.storix.portalapi.model.dto.auth.UserPrincipal;
@@ -22,7 +22,7 @@ public class LocalLoginService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         AuthDto.Login login = loginMapper.findLoginByLoginId(id)
-                .orElseThrow(() -> new StorixException(ErrorCode.LOGIN_NOT_FOUND));
+                .orElseThrow(() -> new StorixException(LoginErrorCode.LOGIN_NOT_FOUND));
         List<AuthDto.Role> roles = loginMapper.findUserRoleByLoginNo(login);
         return new UserPrincipal(login,roles);
     }

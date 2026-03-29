@@ -1,7 +1,8 @@
 package com.shop.storix.portalapi.common.exception;
 
 import com.shop.storix.portalapi.common.ApiResponse;
-import com.shop.storix.portalapi.common.ErrorCode;
+import com.shop.storix.portalapi.common.ErrorCodeEnum;
+import com.shop.storix.portalapi.common.error.CommonErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -27,20 +28,20 @@ public class GlobalExceptionHandler {
     // StorixException 처리
     @ExceptionHandler(StorixException.class)
     protected ResponseEntity<ApiResponse<Void>> handleStorixException(StorixException e) {
-        ErrorCode errorCode = e.getErrorCode();
+        ErrorCodeEnum errorCodeEnum = e.getErrorCodeEnum();
         String message = e.getMessage();
 
-        if (errorCode.getHttpStatus().is5xxServerError()) {
-            log.error("StorixException: code={}, message={}", errorCode.getCode(), message);
+        if (errorCodeEnum.getHttpStatus().is5xxServerError()) {
+            log.error("StorixException: code={}, message={}", errorCodeEnum.getCode(), message);
         } else {
             /* if errorCode.getHttpStatus().is4xxClientError() */
-            log.warn("StorixException: code={}, message={}", errorCode.getCode(), message);
+            log.warn("StorixException: code={}, message={}", errorCodeEnum.getCode(), message);
         }
         return ResponseEntity
-                .status(errorCode.getHttpStatus())
+                .status(errorCodeEnum.getHttpStatus())
                 .body(ApiResponse.fail(
-                        errorCode.getCode(),
-                        errorCode.getDescription()
+                        errorCodeEnum.getCode(),
+                        errorCodeEnum.getDescription()
                 ));
     }
 
@@ -52,14 +53,14 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", "))
                 )
                 .filter(msg -> !msg.isBlank())
-                .orElse(ErrorCode.INVALID_INPUT.getDescription());
+                .orElse(CommonErrorCode.INVALID_INPUT.getDescription());
 
         log.warn("Validation failed: {}", message);
 
         return ResponseEntity
-                .status(ErrorCode.INVALID_INPUT.getHttpStatus())
+                .status(CommonErrorCode.INVALID_INPUT.getHttpStatus())
                 .body(ApiResponse.fail(
-                        ErrorCode.INVALID_INPUT.getCode(),
+                        CommonErrorCode.INVALID_INPUT.getCode(),
                         message
                 ));
     }
@@ -72,9 +73,9 @@ public class GlobalExceptionHandler {
         String message = "필수 파라미터 '" + e.getParameterName() + "'이(가) 누락되었습니다.";
 
         return ResponseEntity
-                .status(ErrorCode.MISSING_PARAMETER.getHttpStatus())
+                .status(CommonErrorCode.MISSING_PARAMETER.getHttpStatus())
                 .body(ApiResponse.fail(
-                        ErrorCode.MISSING_PARAMETER.getCode(),
+                        CommonErrorCode.MISSING_PARAMETER.getCode(),
                         message
                 ));
     }
@@ -85,10 +86,10 @@ public class GlobalExceptionHandler {
         log.warn("Message Not Readable : {}", e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 
         return ResponseEntity
-                .status(ErrorCode.INVALID_INPUT.getHttpStatus())
+                .status(CommonErrorCode.INVALID_INPUT.getHttpStatus())
                 .body(ApiResponse.fail(
-                        ErrorCode.INVALID_INPUT.getCode(),
-                        ErrorCode.INVALID_INPUT.getDescription()
+                        CommonErrorCode.INVALID_INPUT.getCode(),
+                        CommonErrorCode.INVALID_INPUT.getDescription()
                 ));
     }
 
@@ -98,10 +99,10 @@ public class GlobalExceptionHandler {
         log.warn("Method not supported: {}", e.getMethod());
 
         return ResponseEntity
-                .status(ErrorCode.METHOD_NOT_ALLOWED.getHttpStatus())
+                .status(CommonErrorCode.METHOD_NOT_ALLOWED.getHttpStatus())
                 .body(ApiResponse.fail(
-                        ErrorCode.METHOD_NOT_ALLOWED.getCode(),
-                        ErrorCode.METHOD_NOT_ALLOWED.getDescription()
+                        CommonErrorCode.METHOD_NOT_ALLOWED.getCode(),
+                        CommonErrorCode.METHOD_NOT_ALLOWED.getDescription()
                 ));
     }
 
@@ -111,10 +112,10 @@ public class GlobalExceptionHandler {
         log.warn("No Resource Found: {}", e.getMessage());
 
         return ResponseEntity
-                .status(ErrorCode.RESOURCE_NOT_FOUND.getHttpStatus())
+                .status(CommonErrorCode.RESOURCE_NOT_FOUND.getHttpStatus())
                 .body(ApiResponse.fail(
-                        ErrorCode.RESOURCE_NOT_FOUND.getCode(),
-                        ErrorCode.RESOURCE_NOT_FOUND.getDescription()
+                        CommonErrorCode.RESOURCE_NOT_FOUND.getCode(),
+                        CommonErrorCode.RESOURCE_NOT_FOUND.getDescription()
                 ));
     }
 
@@ -123,10 +124,10 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ApiResponse<Void>> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException e) {
         log.warn("Media Type NotSupported : {}", e.getMessage());
         return ResponseEntity
-                .status(ErrorCode.UNSUPPORTED_MEDIA_TYPE.getHttpStatus())
+                .status(CommonErrorCode.UNSUPPORTED_MEDIA_TYPE.getHttpStatus())
                 .body(ApiResponse.fail(
-                        ErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode(),
-                        ErrorCode.UNSUPPORTED_MEDIA_TYPE.getDescription()
+                        CommonErrorCode.UNSUPPORTED_MEDIA_TYPE.getCode(),
+                        CommonErrorCode.UNSUPPORTED_MEDIA_TYPE.getDescription()
                 ));
     }
 
@@ -139,10 +140,10 @@ public class GlobalExceptionHandler {
         log.error("Unhandled exception occurred", e);
 
         return ResponseEntity
-                .status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
+                .status(CommonErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
                 .body(ApiResponse.fail(
-                        ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
-                        ErrorCode.INTERNAL_SERVER_ERROR.getDescription()
+                        CommonErrorCode.INTERNAL_SERVER_ERROR.getCode(),
+                        CommonErrorCode.INTERNAL_SERVER_ERROR.getDescription()
                         )
                 );
     }
