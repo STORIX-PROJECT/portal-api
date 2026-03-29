@@ -59,11 +59,11 @@ public class JwtProvider {
         return refreshToken;
     }
 
-    public TokenStatus validateToken(String token) {
+    public AuthDto.TokenResult validateToken(String token) {
         return jwtUtil.getTokenStatus(token, ACCESS_SECRET_KEY);
     }
 
-    public TokenStatus validateRefreshToken(String token) {
+    public AuthDto.TokenResult validateRefreshToken(String token) {
         return jwtUtil.getTokenStatus(token, REFRESH_SECRET_KEY);
     }
 

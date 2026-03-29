@@ -2,6 +2,7 @@ package com.shop.storix.portalapi.config.auth.filter;
 
 import com.shop.storix.portalapi.config.auth.exception.JwtAuthenticationException;
 import com.shop.storix.portalapi.model.dto.auth.TokenStatus;
+import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
 import com.shop.storix.portalapi.service.auth.facade.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,9 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // 2.상태 판단
-        TokenStatus status = jwtProvider.validateToken(accessToken);
+        AuthDto.TokenResult result = jwtProvider.validateToken(accessToken);
 
-        switch (status) {
+        switch (result.status()) {
             case AUTHENTICATED -> {
                 Authentication authentication = jwtProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
