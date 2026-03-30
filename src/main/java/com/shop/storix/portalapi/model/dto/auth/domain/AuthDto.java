@@ -1,5 +1,6 @@
 package com.shop.storix.portalapi.model.dto.auth.domain;
 
+import com.shop.storix.portalapi.common.mail.MailVariables;
 import com.shop.storix.portalapi.model.dto.auth.AccountStatus;
 import com.shop.storix.portalapi.model.dto.auth.TokenStatus;
 import io.jsonwebtoken.Claims;
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.Size;
 import org.apache.ibatis.type.Alias;
 
 import java.util.List;
+import java.util.Map;
 
 public class AuthDto {
     private AuthDto() {}
@@ -96,6 +98,30 @@ public class AuthDto {
     ) {}
 
     public record EmailAuthCode(String email, String code , MailPurpose mailPurpose) {
+    }
+
+    public record AuthCodeVariables(String code, int expireMinutes) implements MailVariables {
+
+        private static final String TEMPLATE    = "mail/auth-code";
+        private static final String SUBJECT_KEY = "mail.auth.subject";
+
+        @Override
+        public String getTemplateName() {
+            return TEMPLATE;
+        }
+
+        @Override
+        public String getSubjectKey() {
+            return SUBJECT_KEY;
+        }
+
+        @Override
+        public Map<String, Object> toMap() {
+            return Map.of(
+                    "code", code,
+                    "expireMinutes", expireMinutes
+            );
+        }
     }
 
 }

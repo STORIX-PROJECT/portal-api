@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
+
 @Tag(name = "Auth", description = "인증 및 회원 관리 API")
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -86,8 +88,9 @@ public class LoginController {
     @PostMapping("/send")
     public ResponseEntity<ApiResponse<String>> sendCode(
             @RequestParam MailPurpose mailPurpose,
-            @RequestBody @Validated AuthDto.SendMailCodeRequest sendMailCodeRequest) {
-        accountService.sendMail(sendMailCodeRequest, mailPurpose);
+            @RequestBody @Validated AuthDto.SendMailCodeRequest sendMailCodeRequest,
+            Locale locale) {
+        accountService.sendMail(sendMailCodeRequest, mailPurpose, locale);
         return ResponseEntity.ok(
                 ApiResponse.ok("전송되었습니다.")
         );

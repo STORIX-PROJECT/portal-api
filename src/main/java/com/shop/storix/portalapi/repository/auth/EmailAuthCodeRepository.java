@@ -16,16 +16,15 @@ public class EmailAuthCodeRepository {
     private final RedisTemplate<String, String> redisTemplate;
 
     private static final String CODE_PREFIX     = "EMAIL:CODE:";
-    private static final String VERIFIED_PREFIX = "EMAIL:VERIFIED:";
 
-    @Value("${redis.email-code.expiration}")
-    private long codeTtl;
+    @Value("${redis.email-code.expiration-minutes}")
+    private long expirationMinutes;
 
     public void saveCode(AuthDto.EmailAuthCode emailAuthCode) {
         redisTemplate.opsForValue()
                 .set(makeCode(CODE_PREFIX,emailAuthCode.mailPurpose()) + emailAuthCode.email(),
                         emailAuthCode.code(),
-                        Duration.ofMinutes(codeTtl));
+                        Duration.ofMinutes(expirationMinutes));
     }
 
     public Optional<AuthDto.EmailAuthCode> findCode(String email , MailPurpose mailPurpose) {

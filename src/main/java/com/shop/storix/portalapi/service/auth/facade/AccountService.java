@@ -7,6 +7,8 @@ import com.shop.storix.portalapi.service.auth.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
+
 @Service
 @RequiredArgsConstructor
 public class AccountService {
@@ -19,8 +21,8 @@ public class AccountService {
         return loginService.findLoginIdByEmail(verifyMailCodeRequest.email());
     }
 
-    public void sendMail(AuthDto.SendMailCodeRequest sendMailCodeRequest,MailPurpose mailPurpose)
+    public void sendMail(AuthDto.SendMailCodeRequest sendMailCodeRequest, MailPurpose mailPurpose, Locale locale)
     {
-        emailAuthCodeService.sendCodeMessage(sendMailCodeRequest,mailPurpose);
+        emailAuthCodeService.sendCodeMessage(sendMailCodeRequest,mailPurpose,locale);
     }
 }
