@@ -14,4 +14,9 @@ public class LoginServiceImpl implements LoginService {
     public String findLoginIdByEmail(String email) {
         return loginMapper.findLoginIdByEmail(email).orElseThrow(); //HACK: 예외처리 구현해야함
     }
+
+    @Override
+    public boolean existsOauthByEmail(String email) {
+        return loginMapper.existsOauthByEmail(email) > 0;
+    }
 }

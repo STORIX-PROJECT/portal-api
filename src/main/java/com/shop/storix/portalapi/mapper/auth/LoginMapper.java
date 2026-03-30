@@ -32,5 +32,6 @@ public interface LoginMapper {
                        @Param("status") AccountStatus status);
     Optional<String> findLoginIdByEmail(@Param("email") String email);
     int existsProfileByUserLoginNo(String userLoginNo);
+    int existsOauthByEmail(String email);
 }
 

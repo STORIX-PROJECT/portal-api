@@ -97,6 +97,19 @@ public class AuthDto {
             String code
     ) {}
 
+    public record FindUserIdResponse(
+            String message,
+            String value
+    ){
+        public static FindUserIdResponse oauth(String email) {
+            return new FindUserIdResponse("OAuth 가입자입니다.", email);
+        }
+
+        public static FindUserIdResponse normal(String loginId) {
+            return new FindUserIdResponse("아이디 찾기가 완료되었습니다.", loginId);
+        }
+    }
+
     public record EmailAuthCode(String email, String code , MailPurpose mailPurpose) {
     }
 

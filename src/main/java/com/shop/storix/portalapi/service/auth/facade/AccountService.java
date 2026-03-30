@@ -15,10 +15,16 @@ public class AccountService {
     private final EmailAuthCodeService emailAuthCodeService;
     private final LoginService loginService;
 
-    public String findUserId(AuthDto.VerifyMailCodeRequest verifyMailCodeRequest , MailPurpose mailPurpose) {
+    public AuthDto.FindUserIdResponse findUserId(AuthDto.VerifyMailCodeRequest verifyMailCodeRequest , MailPurpose mailPurpose) {
         emailAuthCodeService.verifyCode(verifyMailCodeRequest,mailPurpose);
 
-        return loginService.findLoginIdByEmail(verifyMailCodeRequest.email());
+        String email = verifyMailCodeRequest.email();
+
+        if (loginService.existsOauthByEmail(email)) {
+            return AuthDto.FindUserIdResponse.oauth(email);
+        }
+
+        return AuthDto.FindUserIdResponse.normal(loginService.findLoginIdByEmail(email));
     }
 
     public void sendMail(AuthDto.SendMailCodeRequest sendMailCodeRequest, MailPurpose mailPurpose, Locale locale)

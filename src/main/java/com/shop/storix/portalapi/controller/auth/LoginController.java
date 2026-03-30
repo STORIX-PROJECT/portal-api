@@ -74,11 +74,11 @@ public class LoginController {
             description ="발급 받은 메일코드를 인증하고 해당 이메일로 사용자를 검색합니다."
     )
     @GetMapping("/lookup/id")
-    public ResponseEntity<ApiResponse<String>> lookUpUserId(@ModelAttribute AuthDto.VerifyMailCodeRequest verifyMailCodeRequest)
+    public ResponseEntity<ApiResponse<AuthDto.FindUserIdResponse>> lookUpUserId(@ModelAttribute AuthDto.VerifyMailCodeRequest verifyMailCodeRequest)
     {
-        String loginId = accountService.findUserId(verifyMailCodeRequest, MailPurpose.FIND_ID);
+        AuthDto.FindUserIdResponse response = accountService.findUserId(verifyMailCodeRequest, MailPurpose.FIND_ID);
         return ResponseEntity.ok(
-                ApiResponse.ok(loginId)
+                ApiResponse.ok(response)
         );
     }
     @Operation(
