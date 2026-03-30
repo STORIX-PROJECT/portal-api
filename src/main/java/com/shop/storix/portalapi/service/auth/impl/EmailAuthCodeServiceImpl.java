@@ -1,5 +1,7 @@
 package com.shop.storix.portalapi.service.auth.impl;
 
+import com.shop.storix.portalapi.common.error.MailErrorCode;
+import com.shop.storix.portalapi.common.exception.StorixException;
 import com.shop.storix.portalapi.model.dto.auth.MailPurpose;
 import com.shop.storix.portalapi.model.dto.auth.domain.AuthDto;
 import com.shop.storix.portalapi.repository.auth.EmailAuthCodeRepository;
@@ -21,7 +23,7 @@ public class EmailAuthCodeServiceImpl implements EmailAuthCodeService {
     private final JavaMailSender mailSender;
 
     @Value("${spring.mail.username}")
-    private String senderEmail;
+    private final String senderEmail;
 
     @Override
     public void sendCodeMessage(AuthDto.SendMailCodeRequest sendMailCodeRequest , MailPurpose mailPurpose) {
@@ -36,10 +38,10 @@ public class EmailAuthCodeServiceImpl implements EmailAuthCodeService {
     @Override
     public void verifyCode(AuthDto.VerifyMailCodeRequest verifyMailCodeRequest, MailPurpose mailPurpose) {
         AuthDto.EmailAuthCode storedCode = emailAuthCodeRepository.findCode(verifyMailCodeRequest.email(),mailPurpose)
-                .orElseThrow(() -> new IllegalStateException("인증 코드가 만료되었습니다."));
+                .orElseThrow(() -> new StorixException(MailErrorCode.MAIL_CODE_EXPIRED));
 
         if (!storedCode.code().equals(verifyMailCodeRequest.code())) {
-            throw new IllegalArgumentException("인증 코드가 올바르지 않습니다.");
+            throw new StorixException(MailErrorCode.MAIL_CODE_INVALID);
         }
 
         emailAuthCodeRepository.deleteCode(verifyMailCodeRequest.email(),mailPurpose);
@@ -63,7 +65,7 @@ public class EmailAuthCodeServiceImpl implements EmailAuthCodeService {
 
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new IllegalStateException("이메일 발송에 실패했습니다.");
+            throw new StorixException(MailErrorCode.MAIL_SEND_FAILED);
         }
     }
 
