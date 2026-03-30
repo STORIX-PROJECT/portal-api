@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,12 +29,18 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         String searchWord = request.searchWord();
         log.info("Item search start - searchWord : {}", searchWord);
 
-        if (searchWord == null || searchWord.trim().length() < 2) {
-            log.error("Item search validation failed - searchWord: {}", searchWord);
+        if (searchWord.trim().length() < 2) {
+            log.warn("Item search validation failed - searchWord: {}", searchWord);
             throw new StorixException(ErrorCode.INVALID_INPUT);
         }
 
-        List<ItemSearchDto.ItemSearchResponse> itemList = itemMapper.searchItem(request);
+        // 신상품 기준일 계산
+        int days = (request.newStandard() == null) ? 15 : request.newStandard();
+        String newDate = LocalDate.now().minusDays(days).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        log.info("newDate : {}",newDate);
+
+        List<ItemSearchDto.ItemSearchResponse> itemList = itemMapper.searchItem(request,newDate);
+
         if (CollectionUtils.isEmpty(itemList)) {
             log.warn("Item Search not found - searchWord : {}",request.searchWord());
             return Collections.emptyList();
