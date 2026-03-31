@@ -1,13 +1,18 @@
 package com.shop.storix.portalapi.model.dto.auth.domain;
 
+import com.shop.storix.portalapi.common.mail.MailVariables;
 import com.shop.storix.portalapi.model.dto.auth.AccountStatus;
 import com.shop.storix.portalapi.model.dto.auth.TokenStatus;
 import io.jsonwebtoken.Claims;
+import com.shop.storix.portalapi.model.dto.auth.MailPurpose;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.apache.ibatis.type.Alias;
 
 import java.util.List;
+import java.util.Map;
 
 public class AuthDto {
     private AuthDto() {}
@@ -75,5 +80,61 @@ public class AuthDto {
     }
 
     public record TokenResult(TokenStatus status, Claims claims) {}
+
+    public record SendMailCodeRequest(
+            @NotBlank(message = "이메일은 필수입니다.")
+            @Email(message = "이메일 형식이 올바르지 않습니다.")
+            String email
+    ) {}
+
+    public record VerifyMailCodeRequest(
+            @NotBlank(message = "이메일은 필수입니다.")
+            @Email(message = "이메일 형식이 올바르지 않습니다.")
+            String email,
+
+            @NotBlank(message = "인증 코드는 필수입니다.")
+            @Size(min = 6, max = 6, message = "인증 코드는 6자리입니다.")
+            String code
+    ) {}
+
+    public record FindUserIdResponse(
+            String message,
+            String value
+    ){
+        public static FindUserIdResponse oauth(String email) {
+            return new FindUserIdResponse("OAuth 가입자입니다.", email);
+        }
+
+        public static FindUserIdResponse normal(String loginId) {
+            return new FindUserIdResponse("아이디 찾기가 완료되었습니다.", loginId);
+        }
+    }
+
+    public record EmailAuthCode(String email, String code , MailPurpose mailPurpose) {
+    }
+
+    public record AuthCodeVariables(String code, int expireMinutes) implements MailVariables {
+
+        private static final String TEMPLATE    = "mail/auth-code";
+        private static final String SUBJECT_KEY = "mail.auth.subject";
+
+        @Override
+        public String getTemplateName() {
+            return TEMPLATE;
+        }
+
+        @Override
+        public String getSubjectKey() {
+            return SUBJECT_KEY;
+        }
+
+        @Override
+        public Map<String, Object> toMap() {
+            return Map.of(
+                    "code", code,
+                    "expireMinutes", expireMinutes
+            );
+        }
+    }
 
 }

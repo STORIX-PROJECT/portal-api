@@ -164,6 +164,20 @@
         WHERE pp.email = #{email}
     </select>
 
+    <select id="existsOauthByEmail"
+            parameterType="String"
+            resultType="int">
+        SELECT EXISTS (
+            SELECT 1
+        FROM OMS.USER_OAUTH uo
+        JOIN OMS.USER_LOGIN ul
+        ON ul.user_login_no = uo.user_login_no
+        JOIN OMS.PURCHASER_PROFILE pp
+        ON pp.user_login_no = ul.user_login_no
+        WHERE pp.email = #{email}
+        )
+    </select>
+
     <select id="existsProfileByUserLoginNo"
             parameterType="java.lang.String"
             resultType="int">
